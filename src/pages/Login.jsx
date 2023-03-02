@@ -10,7 +10,6 @@ function Login() {
     const emailRegex = /^\S+@\S+\.\S+$/i.test(userEmail);
     if (emailRegex && userPassword.length >= min) {
       setIsDisabled(false);
-      console.log('Botão válido');
     } else { setIsDisabled(true); }
   };
   return (
