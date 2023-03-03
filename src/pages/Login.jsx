@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 function Login() {
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isDisabled, setIsDisabled] = useState(true);
+  const history = useHistory();
 
   const validation = () => {
     const min = 6;
@@ -35,8 +37,11 @@ function Login() {
       <button
         type="button"
         data-testid="login-submit-btn"
-        onClick={ () => localStorage.setItem('user', JSON
-          .stringify({ email: userEmail })) }
+        onClick={ () => {
+          localStorage.setItem('user', JSON
+            .stringify({ email: userEmail }));
+          history.push('/meals');
+        } }
         disabled={ isDisabled }
       >
         Logar
