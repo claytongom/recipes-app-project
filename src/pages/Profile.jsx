@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 export default function Profile() {
   // Vou alimentar o estado email com o que tem no localStorage segundo o requisito.
@@ -48,6 +49,7 @@ export default function Profile() {
       >
         Logout
       </button>
+      <Footer />
     </div>
   );
 }

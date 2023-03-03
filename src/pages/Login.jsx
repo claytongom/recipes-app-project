@@ -46,7 +46,6 @@ function Login() {
       >
         Logar
       </button>
-
     </div>
   );
 }
