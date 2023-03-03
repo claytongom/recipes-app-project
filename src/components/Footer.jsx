@@ -5,7 +5,13 @@ import drinkIcon from '../images/drinkIcon.svg';
 
 export default function Footer() {
   return (
-    <footer data-testid="footer">
+    <footer
+      style={ {
+        position: 'fixed',
+        bottom: '0px',
+      } }
+      data-testid="footer"
+    >
       <Link to="/meals">
         <img src={ mealIcon } alt="Meal Icon" data-testid="meals-bottom-btn" />
       </Link>
