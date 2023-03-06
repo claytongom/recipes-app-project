@@ -6,7 +6,8 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Recipes from './pages/Recipes';
 import DoneRecipes from './pages/DoneRecipes';
-import FavoriteRecipes from './pages/FavoriteRecipes';
+import Header from './components/Header';
+import SearchBar from './components/SearchBar';
 
 function App() {
   return (
@@ -15,8 +16,9 @@ function App() {
       <Route path="/meals" component={ Recipes } />
       <Route path="/drinks" component={ Recipes } />
       <Route path="/done-recipes" component={ DoneRecipes } />
-      <Route path="/favorite-recipes" component={ FavoriteRecipes } />
       <Route exact path="/" component={ Login } />
+      <Route exact path="/header" component={ Header } />
+      <Route exact path="/searchbar" component={ SearchBar } />
     </Switch>
   );
 }

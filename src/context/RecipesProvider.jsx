@@ -7,7 +7,7 @@ export const RecipesContext = createContext({});
 function RecipesProvider({ children }) {
   const [meals, setMeals] = useState([]);
   const [drinks, setDrinks] = useState([]);
-  const [makeFetch, isLoading] = useFetch();
+  const { makeFetch, isLoading } = useFetch();
 
   useEffect(() => {
     const performFetch = async () => {
@@ -20,7 +20,8 @@ function RecipesProvider({ children }) {
       setMeals(dataMeals.meals);
     };
     performFetch();
-  }, [makeFetch]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const values = useMemo(() => ({
     meals, drinks, isLoading,
