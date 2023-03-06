@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Footer from '../components/Footer';
+import Header from '../components/Header';
 
 function Profile() {
   // Vou alimentar o estado email com o que tem no localStorage segundo o requisito.
@@ -26,7 +27,14 @@ function Profile() {
 
   return (
     <div>
-      <h1>Profile</h1>
+      <Header
+        headerTypes={ {
+          title: 'Profile',
+          searchButton: false,
+          profileIcone: true,
+          drink: false,
+        } }
+      />
       <p data-testid="profile-email">{email}</p>
       <button
         type="button"
