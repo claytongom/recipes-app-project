@@ -3,19 +3,28 @@ import './App.css';
 import { Switch, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './pages/Login';
+import Meals from './pages/Meals';
+import Drinks from './pages/Drinks';
 import Profile from './pages/Profile';
-import Recipes from './pages/Recipes';
 import DoneRecipes from './pages/DoneRecipes';
+<<<<<<< HEAD
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
+=======
+import FavoritesRecipes from './pages/FavoritesRecipes';
+>>>>>>> main-group-25
 
 function App() {
   return (
     <Switch>
       <Route path="/profile" component={ Profile } />
-      <Route path="/meals" component={ Recipes } />
-      <Route path="/drinks" component={ Recipes } />
+      <Route path="/meals" component={ Meals } />
+      <Route path="/drinks" component={ Drinks } />
       <Route path="/done-recipes" component={ DoneRecipes } />
+<<<<<<< HEAD
+=======
+      <Route path="/favorite-recipes" component={ FavoritesRecipes } />
+>>>>>>> main-group-25
       <Route exact path="/" component={ Login } />
       <Route exact path="/header" component={ Header } />
       <Route exact path="/searchbar" component={ SearchBar } />

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Footer from '../components/Footer';
 
-export default function Profile() {
+function Profile() {
   // Vou alimentar o estado email com o que tem no localStorage segundo o requisito.
   const [email, setEmail] = useState('');
   const history = useHistory();
@@ -42,14 +42,12 @@ export default function Profile() {
       >
         Favorite Recipes
       </button>
-      <button
-        type="button"
-        data-testid="profile-logout-btn"
-        onClick={ DoLogout }
-      >
+      <button type="button" data-testid="profile-logout-btn" onClick={ DoLogout }>
         Logout
       </button>
       <Footer />
     </div>
   );
 }
+
+export default Profile;

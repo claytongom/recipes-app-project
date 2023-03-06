@@ -1,6 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+<<<<<<< HEAD
+=======
+import RecipesProvider from './context/RecipesProvider';
+import HeaderProvider from './context/HeaderProvider';
+>>>>>>> main-group-25
 import App from './App';
 import RecipesProvider from './context/RecipesProvider';
 import * as serviceWorker from './serviceWorker';
@@ -10,7 +15,9 @@ ReactDOM
   .render(
     <BrowserRouter>
       <RecipesProvider>
-        <App />
+        <HeaderProvider>
+          <App />
+        </HeaderProvider>
       </RecipesProvider>
     </BrowserRouter>,
   );

@@ -1,8 +1,6 @@
-import React, { createContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import useFetch from '../hooks/useFetch';
-
-export const RecipesContext = createContext({});
+import RecipesContext from './RecipesContext';
 
 function RecipesProvider({ children }) {
   const [meals, setMeals] = useState([]);
