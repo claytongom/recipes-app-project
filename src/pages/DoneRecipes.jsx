@@ -1,9 +1,17 @@
 import React from 'react';
+import Header from '../components/Header';
 
 function Recipes() {
   return (
     <div>
-      <h1>Done Recipes</h1>
+      <Header
+        headerTypes={ {
+          title: 'Done Recipes',
+          searchButton: false,
+          profileIcone: true,
+          drink: false,
+        } }
+      />
     </div>
   );
 }

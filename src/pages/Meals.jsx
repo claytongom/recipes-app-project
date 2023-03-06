@@ -18,10 +18,9 @@ function Meals() {
 
   return (
     <div>
-      <h1>Meals</h1>
       <Header
         headerTypes={
-          { title: 'Comidas', searchButton: true, profileIcone: true, drink: false }
+          { title: 'Meals', searchButton: true, profileIcone: true, drink: false }
         }
       />
       {data.map((recipe, index) => {

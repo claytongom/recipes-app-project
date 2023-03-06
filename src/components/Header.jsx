@@ -16,8 +16,8 @@ export default function Header(props) {
     <div>
       <h1 data-testid="page-title">{ title }</h1>
       { profileIcone && (
-        <Link data-testid="profile-top-btn" to="/profile">
-          <img src={ profileIcon } alt="profile" />
+        <Link to="/profile">
+          <img data-testid="profile-top-btn" src={ profileIcon } alt="profile" />
         </Link>
       )}
       { barVisibleLogic && (
@@ -34,10 +34,9 @@ export default function Header(props) {
       { searchButton && (
         <button
           type="button"
-          data-testid="search-top-btn"
           onClick={ () => setBarVisibleLogic(!barVisibleLogic) }
         >
-          <img src={ searchIcon } alt="search" />
+          <img data-testid="search-top-btn" src={ searchIcon } alt="search" />
         </button>
       )}
     </div>

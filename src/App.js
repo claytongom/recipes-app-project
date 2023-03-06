@@ -7,7 +7,7 @@ import Meals from './pages/Meals';
 import Drinks from './pages/Drinks';
 import Profile from './pages/Profile';
 import DoneRecipes from './pages/DoneRecipes';
-import FavoritesRecipes from './pages/FavoritesRecipes';
+import FavoriteRecipes from './pages/FavoriteRecipes';
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
       <Route path="/meals" component={ Meals } />
       <Route path="/drinks" component={ Drinks } />
       <Route path="/done-recipes" component={ DoneRecipes } />
-      <Route path="/favorite-recipes" component={ FavoritesRecipes } />
+      <Route path="/favorite-recipes" component={ FavoriteRecipes } />
       <Route exact path="/" component={ Login } />
     </Switch>
   );
