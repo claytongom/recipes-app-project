@@ -1,7 +1,11 @@
 import React from 'react';
 
-function DoneRecipes() {
-  return <div>DoneRecipes</div>;
+function Recipes() {
+  return (
+    <div>
+      <h1>Done Recipes</h1>
+    </div>
+  );
 }
 
-export default DoneRecipes;
+export default Recipes;

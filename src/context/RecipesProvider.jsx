@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useMemo } from 'react';
-import RecipesContext from './recipesContext';
+import RecipesContext from './RecipesContext';
 
 function RecipesProvider({ children }) {
   useEffect(() => {

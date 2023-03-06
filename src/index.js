@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import RecipesProvider from './context/RecipesProvider';
+import HeaderProvider from './context/HeaderProvider';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
@@ -11,7 +12,9 @@ ReactDOM
   .render(
     <BrowserRouter>
       <RecipesProvider>
-        <App />
+        <HeaderProvider>
+          <App />
+        </HeaderProvider>
       </RecipesProvider>
     </BrowserRouter>,
   );
