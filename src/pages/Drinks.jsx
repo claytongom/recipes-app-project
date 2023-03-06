@@ -38,7 +38,7 @@ function Drinks() {
         }
         return null;
       })}
-      <Footer/>
+      <Footer />
     </div>
   );
 }
