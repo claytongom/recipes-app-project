@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import Footer from '../components/Footer';
 import Header from '../components/Header';
 import RecipesCard from '../components/RecipesCard';
 import HeaderContext from '../context/HeaderContext';
@@ -37,6 +38,7 @@ function Drinks() {
         }
         return null;
       })}
+      <Footer/>
     </div>
   );
 }

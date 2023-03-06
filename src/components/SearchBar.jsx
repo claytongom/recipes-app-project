@@ -47,7 +47,6 @@ function SearchBar(props) {
   return (
     <div>
       <label htmlFor="ingredient-search-radio">
-        Ingredient
         <input
           type="radio"
           data-testid="ingredient-search-radio"
@@ -55,9 +54,9 @@ function SearchBar(props) {
           value="ingredient"
           onChange={ ({ target: { value } }) => setSearchType(value) }
         />
+        Ingredient
       </label>
       <label htmlFor="name-search-radio">
-        Name
         <input
           type="radio"
           data-testid="name-search-radio"
@@ -65,9 +64,9 @@ function SearchBar(props) {
           value="name"
           onChange={ ({ target: { value } }) => setSearchType(value) }
         />
+        Name
       </label>
       <label htmlFor="first-letter-search-radio">
-        First letter
         <input
           type="radio"
           data-testid="first-letter-search-radio"
@@ -75,6 +74,7 @@ function SearchBar(props) {
           value="first-letter"
           onChange={ ({ target: { value } }) => setSearchType(value) }
         />
+        First letter
       </label>
       <button
         type="button"
