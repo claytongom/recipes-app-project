@@ -29,7 +29,11 @@ function SearchBar(props) {
     const responseAPI = await fetch(URL);
     const dataAPI = await responseAPI.json();
     const isDrink = drink ? 'drinks' : 'meals';
-    setData(dataAPI[isDrink]);
+    if (dataAPI[isDrink] === null) {
+      global.alert('Sorry, we haven\'t found any recipes for these filters.');
+    } else {
+      setData(dataAPI[isDrink]);
+    }
   }
 
   const handleClick = () => {
