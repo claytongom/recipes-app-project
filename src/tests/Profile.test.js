@@ -15,7 +15,7 @@ describe('Testanto a página "Profile"', () => {
     expect(emailElement).toBeInTheDocument();
   });
 
-  test('Verifica se os botões "Done Recipes" "Favorite Recipes" e "Logout" são renderizados.', () => {
+  test('Verifica se os botões "Done Recipes" "Favorite Recipes" e o "Logout" são renderizados.', () => {
     renderWithRouterAndContextProvider(<Profile />);
     const doneRecipesBtn = screen.getByRole('button', {
       name: /done recipes/i,
