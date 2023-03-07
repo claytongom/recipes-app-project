@@ -3,6 +3,8 @@ import { useLocation, useParams } from 'react-router-dom';
 
 const MEALS = 'meals';
 const DRINKS = 'drinks';
+const urlApiDrinks = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
+const urlApiMeals = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
 
 function RecipeDetails() {
   const { id } = useParams();
@@ -10,6 +12,8 @@ function RecipeDetails() {
   const [recipeData, setRecipeData] = useState([]);
   const [strIngredient, setStrIngredient] = useState([]);
   const [video, setVideo] = useState('');
+  const [dataApiDrinks, setDataApiDrinks] = useState([]);
+  const [dataApiMeals, setDataApiMeals] = useState([]);
 
   // Função para definir a url para o fetch e verificar se é meal ou drink.
   const getUrl = () => {
@@ -26,6 +30,15 @@ function RecipeDetails() {
   };
   const [urlAndType] = useState(getUrl());
 
+  const getDataApiDrinkAndMeal = async () => {
+    const responseDrinks = await fetch(urlApiDrinks);
+    const dataDrinks = await responseDrinks.json();
+    setDataApiDrinks(dataDrinks);
+    const responseMeals = await fetch(urlApiMeals);
+    const dataMeals = await responseMeals.json();
+    setDataApiMeals(dataMeals);
+  };
+
   // useEffect para fazer o fetch para alimentar o estado recipeData.
   useEffect(() => {
     const fetchApi = async () => {
@@ -34,8 +47,8 @@ function RecipeDetails() {
       setRecipeData(data[urlAndType.type][0]);
     };
     fetchApi();
+    getDataApiDrinkAndMeal();
   }, [urlAndType]);
-
   // useEffect usado para pegar os ingredientes válidos da receita.
   useEffect(() => {
     const getIngredients = () => {
