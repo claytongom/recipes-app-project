@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import Carousel from '../components/Carousel';
-import ProgressMenu from '../components/ProgressMenu';
+// import ProgressMenu from '../components/ProgressMenu';
 
 const MEALS = 'meals';
 const DRINKS = 'drinks';
@@ -17,6 +17,21 @@ function RecipeDetails() {
   const [dataApiDrinks, setDataApiDrinks] = useState([]);
   const [dataApiMeals, setDataApiMeals] = useState([]);
 
+  localStorage.setItem('doneRecipes', JSON.stringify([{ id: '52908' }]));
+  localStorage.setItem('inProgressRecipes', JSON.stringify({ meals: { 52908: [] } }));
+
+  const VerifyDoneRecipes = () => {
+    const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes'));
+    const searchID = doneRecipes.findIndex((el) => el.id === id);
+    return searchID >= 0;
+  };
+
+  const VerifyInProgressRecipes = () => {
+    const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const KeysProgressRecipes = Object.keys(inProgressRecipes.meals);
+    const searchProgressRecipes = KeysProgressRecipes.findIndex((el) => el === id);
+    return searchProgressRecipes >= 0;
+  };
   // Função para definir a url para o fetch e verificar se é meal ou drink.
   const getUrl = () => {
     if (pathname.includes(MEALS)) {
@@ -105,7 +120,6 @@ function RecipeDetails() {
   });
 
   const type = urlAndType.type === MEALS ? 'Meal' : 'Drink';
-
   return (
     <div>
       <h1 data-testid="recipe-title">{recipeData[`str${type}`]}</h1>
@@ -143,7 +157,15 @@ function RecipeDetails() {
         dataApiMeals={ dataApiMeals }
         type={ urlAndType.type }
       />
-      <ProgressMenu />
+      {!VerifyDoneRecipes()
+      && (
+        <button
+          className="FixedBottom"
+          data-testid="start-recipe-btn"
+        >
+          {VerifyInProgressRecipes() ? 'Continue Recipe' : 'Start Recipe'}
+        </button>)}
+
     </div>
   );
 }
