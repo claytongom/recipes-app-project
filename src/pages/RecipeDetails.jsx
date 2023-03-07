@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
+import Carousel from '../components/Carousel';
+import ProgressMenu from '../components/ProgressMenu';
 
 const MEALS = 'meals';
 const DRINKS = 'drinks';
@@ -33,10 +35,10 @@ function RecipeDetails() {
   const getDataApiDrinkAndMeal = async () => {
     const responseDrinks = await fetch(urlApiDrinks);
     const dataDrinks = await responseDrinks.json();
-    setDataApiDrinks(dataDrinks);
+    setDataApiDrinks(dataDrinks.drinks);
     const responseMeals = await fetch(urlApiMeals);
     const dataMeals = await responseMeals.json();
-    setDataApiMeals(dataMeals);
+    setDataApiMeals(dataMeals.meals);
   };
 
   // useEffect para fazer o fetch para alimentar o estado recipeData.
@@ -136,6 +138,12 @@ function RecipeDetails() {
         allow="accelerometer; autoplay; clipboard-write; encrypted-media"
         allowFullScreen
       />
+      <Carousel
+        dataApiDrinks={ dataApiDrinks }
+        dataApiMeals={ dataApiMeals }
+        type={ urlAndType.type }
+      />
+      <ProgressMenu />
     </div>
   );
 }
