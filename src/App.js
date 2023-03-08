@@ -9,7 +9,8 @@ import Profile from './pages/Profile';
 import DoneRecipes from './pages/DoneRecipes';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
-import FavoritesRecipes from './pages/FavoritesRecipes';
+import FavoriteRecipes from './pages/FavoriteRecipes';
+
 function App() {
   return (
     <Switch>
@@ -17,7 +18,7 @@ function App() {
       <Route path="/meals" component={ Meals } />
       <Route path="/drinks" component={ Drinks } />
       <Route path="/done-recipes" component={ DoneRecipes } />
-      <Route path="/favorite-recipes" component={ FavoritesRecipes } />
+      <Route path="/favorite-recipes" component={ FavoriteRecipes } />
       <Route exact path="/" component={ Login } />
       <Route exact path="/header" component={ Header } />
       <Route exact path="/searchbar" component={ SearchBar } />
