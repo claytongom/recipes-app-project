@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useHistory } from 'react-router-dom';
+import copy from 'clipboard-copy';
 import Carousel from '../components/Carousel';
 // import ProgressMenu from '../components/ProgressMenu';
 
@@ -16,22 +17,15 @@ function RecipeDetails() {
   const [video, setVideo] = useState('');
   const [dataApiDrinks, setDataApiDrinks] = useState([]);
   const [dataApiMeals, setDataApiMeals] = useState([]);
+  const [copied, setCopied] = useState(false);
+  const history = useHistory();
+  // Setando provisoriamente as informações no localstorage
+  localStorage
+    .setItem('doneRecipes', JSON.stringify([{ id: '52908' }]));
+  localStorage
+    .setItem('inProgressRecipes', JSON
+      .stringify({ meals: { 52771: [] }, drinks: { 178319: [] } }));
 
-  localStorage.setItem('doneRecipes', JSON.stringify([{ id: '52908' }]));
-  localStorage.setItem('inProgressRecipes', JSON.stringify({ meals: { 52908: [] } }));
-
-  const VerifyDoneRecipes = () => {
-    const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes'));
-    const searchID = doneRecipes.findIndex((el) => el.id === id);
-    return searchID >= 0;
-  };
-
-  const VerifyInProgressRecipes = () => {
-    const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
-    const KeysProgressRecipes = Object.keys(inProgressRecipes.meals);
-    const searchProgressRecipes = KeysProgressRecipes.findIndex((el) => el === id);
-    return searchProgressRecipes >= 0;
-  };
   // Função para definir a url para o fetch e verificar se é meal ou drink.
   const getUrl = () => {
     if (pathname.includes(MEALS)) {
@@ -46,6 +40,22 @@ function RecipeDetails() {
     };
   };
   const [urlAndType] = useState(getUrl());
+
+  // Verifica se essa receita já foi feita anteriormente
+  const VerifyDoneRecipes = () => {
+    const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes'));
+    const searchID = doneRecipes.findIndex((el) => el.id === id);
+    return searchID >= 0;
+  };
+  // Verifica se a receita está na lista de receitas em progresso
+  const VerifyInProgressRecipes = () => {
+    const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const KeysProgressRecipes = urlAndType.type === 'meals'
+      ? Object.keys(inProgressRecipes.meals)
+      : Object.keys(inProgressRecipes.drinks);
+    const searchProgressRecipes = KeysProgressRecipes.findIndex((el) => el === id);
+    return searchProgressRecipes >= 0;
+  };
 
   const getDataApiDrinkAndMeal = async () => {
     const responseDrinks = await fetch(urlApiDrinks);
@@ -112,6 +122,7 @@ function RecipeDetails() {
 
   const ingredientElements = strIngredient.map((item, index) => {
     const { ingredient, measure } = item;
+
     return (
       <li data-testid={ `${index}-ingredient-name-and-measure` } key={ ingredient }>
         {`${ingredient} - ${measure}`}
@@ -157,15 +168,41 @@ function RecipeDetails() {
         dataApiMeals={ dataApiMeals }
         type={ urlAndType.type }
       />
-      {!VerifyDoneRecipes()
+      <div className="FixedBottom">
+        {!VerifyDoneRecipes() && !VerifyInProgressRecipes()
       && (
         <button
           className="FixedBottom"
           data-testid="start-recipe-btn"
         >
-          {VerifyInProgressRecipes() ? 'Continue Recipe' : 'Start Recipe'}
+          Start Recipe
         </button>)}
 
+        {VerifyInProgressRecipes() && !VerifyDoneRecipes()
+      && (
+        <button
+          data-testid="start-recipe-btn"
+          onClick={ () => history.push(`/${urlAndType.type}/${id}/in-progress`) }
+        >
+          Continue Recipe
+        </button>
+      ) }
+        <button
+          data-testid="share-btn"
+          onClick={ () => {
+            copy(document.location.href);
+            setCopied(true);
+          } }
+        >
+          Compartilhar
+        </button>
+
+        {copied && (<p>Link copied!</p>)}
+
+        <button data-testid="favorite-btn">
+          Favoritar
+        </button>
+      </div>
     </div>
   );
 }
