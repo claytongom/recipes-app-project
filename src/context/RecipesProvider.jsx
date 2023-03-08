@@ -41,8 +41,10 @@ function RecipesProvider({ children }) {
       drinks,
       categorysMeals,
       categorysDrinks,
+      makeFetch,
+      setMeals,
     }),
-    [meals, drinks, categorysMeals, categorysDrinks],
+    [meals, drinks, categorysMeals, categorysDrinks, makeFetch],
   );
 
   return (
