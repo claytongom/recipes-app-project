@@ -9,7 +9,7 @@ import Recipes from './Recipes';
 
 function Drinks() {
   const { data } = useContext(HeaderContext);
-  const { drinks } = useContext(RecipesContext);
+  const { drinks, categorysDrinks } = useContext(RecipesContext);
 
   const history = useHistory();
 
@@ -30,7 +30,7 @@ function Drinks() {
           drink: true,
         } }
       />
-      <Recipes recipe={ drinks } />
+      <Recipes recipe={ drinks } categorys={ categorysDrinks } />
       {data.map((recipe, index) => {
         const { idDrink, strInstructions, strDrink, strDrinkThumb } = recipe;
         const max = 12;

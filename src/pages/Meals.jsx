@@ -4,9 +4,13 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import RecipesCard from '../components/RecipesCard';
 import HeaderContext from '../context/HeaderContext';
+import RecipesContext from '../context/RecipesContext';
+import Recipes from './Recipes';
 
 function Meals() {
   const { data } = useContext(HeaderContext);
+
+  const { meals, categorysMeals } = useContext(RecipesContext);
 
   const history = useHistory();
 
@@ -24,6 +28,7 @@ function Meals() {
           { title: 'Comidas', searchButton: true, profileIcone: true, drink: false }
         }
       />
+      <Recipes recipe={ meals } categorys={ categorysMeals } />
       {data.map((recipe, index) => {
         const { idMeal, strInstructions, strMeal, strMealThumb } = recipe;
         const max = 12;

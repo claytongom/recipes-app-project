@@ -3,11 +3,23 @@ import PropTypes from 'prop-types';
 
 function Recipes(props) {
   const { recipe } = props;
+  const { categorys } = props;
 
   const MAX_LENGTH = 12;
+  const VALUE = 5;
 
   return (
     <main>
+      {
+        categorys.map((item) => (
+          <button
+            data-testid={ `${item.strCategory}-category-filter` }
+            key={ item.strCategory }
+          >
+            { item.strCategory }
+          </button>
+        )).slice(0, VALUE)
+      }
       {
         recipe.map((item, index) => (
           <div
@@ -23,7 +35,6 @@ function Recipes(props) {
               data-testid={ `${index}-card-name` }
             >
               {item.strMeal || item.strDrink}
-
             </p>
           </div>
         )).slice(0, MAX_LENGTH)
@@ -34,6 +45,9 @@ function Recipes(props) {
 
 Recipes.propTypes = {
   recipe: PropTypes.arrayOf().isRequired,
+  categorys: PropTypes.arrayOf(PropTypes.shape({
+    strCategory: PropTypes.string.isRequired,
+  })).isRequired,
 };
 
 export default Recipes;
