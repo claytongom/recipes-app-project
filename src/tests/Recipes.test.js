@@ -1,38 +1,26 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Recipes from '../pages/Recipes';
-// eslint-disable-next-line import/named
-import { renderWithRouterAndContextProvider } from './helpers/renderWithRouterAndContextProvider';
+import renderWithRouterAndContextProvider from './helpers/renderWithRouterAndContextProvider';
 
 describe('teste se as receitas funcionam corretamente', () => {
   it('deve renderizar todas as categorias corretamente', () => {
     renderWithRouterAndContextProvider(
-      <Recipes
-        isLoading={ false }
-        recipe={ mealMock }
-      />,
+      <Recipes isLoading={ false } recipe={ mealMock } />,
     );
     const categoryButtons = screen.getAllByRole('button');
     expect(categoryButtons.length).toBe(6);
   });
 
   it('deve renderizar "Carregando" se isLoading for true', () => {
-    renderWithRouterAndContextProvider(
-      <Recipes
-        isLoading
-        recipe={ mealMock }
-      />,
-    );
+    renderWithRouterAndContextProvider(<Recipes isLoading recipe={ mealMock } />);
     const loading = screen.getByText(/carregando/i);
     expect(loading).toBeInTheDocument();
   });
 
   it('todas as receitas devem renderizar corretamente', () => {
     renderWithRouterAndContextProvider(
-      <Recipes
-        isLoading={ false }
-        recipe={ mealMock }
-      />,
+      <Recipes isLoading={ false } recipe={ mealMock } />,
     );
 
     const recipes = screen.getAllByRole('img', {
@@ -44,10 +32,7 @@ describe('teste se as receitas funcionam corretamente', () => {
 
   it('deve renderizar filterRecipes ao clicar no filterButton', () => {
     renderWithRouterAndContextProvider(
-      <Recipes
-        isLoading={ false }
-        recipe={ mealMock }
-      />,
+      <Recipes isLoading={ false } recipe={ mealMock } />,
     );
 
     const recipes = screen.getAllByRole('img');

@@ -2,10 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function Recipes(props) {
-  const { recipe, isLoading } = props;
+  const { recipe } = props;
 
   const MAX_LENGTH = 12;
-  if (isLoading) return 'Carregando';
 
   return (
     <main>
@@ -35,7 +34,6 @@ function Recipes(props) {
 
 Recipes.propTypes = {
   recipe: PropTypes.arrayOf().isRequired,
-  isLoading: PropTypes.bool.isRequired,
 };
 
 export default Recipes;

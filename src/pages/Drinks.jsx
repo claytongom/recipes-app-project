@@ -4,9 +4,12 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import RecipesCard from '../components/RecipesCard';
 import HeaderContext from '../context/HeaderContext';
+import RecipesContext from '../context/RecipesContext';
+import Recipes from './Recipes';
 
 function Drinks() {
   const { data } = useContext(HeaderContext);
+  const { drinks } = useContext(RecipesContext);
 
   const history = useHistory();
 
@@ -20,21 +23,27 @@ function Drinks() {
     <div>
       <h1>Drinks</h1>
       <Header
-        headerTypes={
-          { title: 'Drinks', searchButton: true, profileIcone: true, drink: true }
-        }
+        headerTypes={ {
+          title: 'Drinks',
+          searchButton: true,
+          profileIcone: true,
+          drink: true,
+        } }
       />
+      <Recipes recipe={ drinks } />
       {data.map((recipe, index) => {
         const { idDrink, strInstructions, strDrink, strDrinkThumb } = recipe;
         const max = 12;
         if (index < max) {
-          return (<RecipesCard
-            key={ idDrink }
-            index={ index }
-            name={ strDrink }
-            recipe={ strInstructions }
-            image={ strDrinkThumb }
-          />);
+          return (
+            <RecipesCard
+              key={ idDrink }
+              index={ index }
+              name={ strDrink }
+              recipe={ strInstructions }
+              image={ strDrinkThumb }
+            />
+          );
         }
         return null;
       })}

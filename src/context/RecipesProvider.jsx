@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import RecipesContext from './RecipesContext';
+import useFetch from '../hooks/useFetch';
 
 function RecipesProvider({ children }) {
   const [meals, setMeals] = useState([]);
@@ -9,26 +10,30 @@ function RecipesProvider({ children }) {
 
   useEffect(() => {
     const performFetch = async () => {
-      const dataDrinks = await
-      makeFetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
+      const dataDrinks = await makeFetch(
+        'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=',
+      );
       setDrinks(dataDrinks.drinks);
 
-      const dataMeals = await
-      makeFetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
+      const dataMeals = await makeFetch(
+        'https://www.themealdb.com/api/json/v1/1/search.php?s=',
+      );
       setMeals(dataMeals.meals);
     };
     performFetch();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [makeFetch]);
 
-  const values = useMemo(() => ({
-    meals, drinks, isLoading,
-  }), [meals, drinks, isLoading]);
+  const values = useMemo(
+    () => ({
+      meals,
+      drinks,
+      isLoading,
+    }),
+    [meals, drinks, isLoading],
+  );
 
   return (
-    <RecipesContext.Provider value={ values }>
-      {children}
-    </RecipesContext.Provider>
+    <RecipesContext.Provider value={ values }>{children}</RecipesContext.Provider>
   );
 }
 
