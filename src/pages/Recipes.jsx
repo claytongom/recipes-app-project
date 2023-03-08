@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 import RecipesContext from '../context/RecipesContext';
 import useFetch from '../hooks/useFetch';
 
 function Recipes(props) {
   const { recipe, categorys, type } = props;
+
+  const [filterActive, setFilterActive] = useState('');
 
   const { setMeals, setDrinks } = useContext(RecipesContext);
   const { makeFetch } = useFetch();
@@ -27,6 +30,7 @@ function Recipes(props) {
   };
 
   const filterByCategory = async (name) => {
+    setFilterActive(name);
     const URL_API_MEALS = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${name}`;
     const URL_API_DRINKS = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${name}`;
 
@@ -41,6 +45,14 @@ function Recipes(props) {
     }
   };
 
+  const veryFilterFunction = (name) => {
+    if (filterActive === name) {
+      removeFilter();
+    } else {
+      filterByCategory(name);
+    }
+  };
+
   return (
     <main>
       <button data-testid="All-category-filter" onClick={ removeFilter }>All</button>
@@ -49,7 +61,7 @@ function Recipes(props) {
           <button
             data-testid={ `${item.strCategory}-category-filter` }
             key={ index }
-            onClick={ () => filterByCategory(item.strCategory) }
+            onClick={ () => veryFilterFunction(item.strCategory) }
           >
             {item.strCategory}
           </button>
@@ -57,19 +69,22 @@ function Recipes(props) {
         .slice(0, VALUE)}
       {recipe
         .map((item, index) => (
-          <div
+          <Link
+            to={ `/${type}/${item.idDrink || item.idMeal}` }
             key={ item.idDrink || item.idMeal }
             data-testid={ `${index}-recipe-card` }
           >
-            <img
-              data-testid={ `${index}-card-img` }
-              src={ item.strDrinkThumb || item.strMealThumb }
-              alt="foto do produto"
-            />
-            <p data-testid={ `${index}-card-name` }>
-              {item.strMeal || item.strDrink}
-            </p>
-          </div>
+            <div>
+              <img
+                data-testid={ `${index}-card-img` }
+                src={ item.strDrinkThumb || item.strMealThumb }
+                alt="foto do produto"
+              />
+              <p data-testid={ `${index}-card-name` }>
+                {item.strMeal || item.strDrink}
+              </p>
+            </div>
+          </Link>
         ))
         .slice(0, MAX_LENGTH)}
     </main>
