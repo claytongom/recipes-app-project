@@ -1,17 +1,21 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import RecipesContext from './RecipesContext';
-import useFetch from '../hooks/useFetch';
 
 function RecipesProvider({ children }) {
   const [meals, setMeals] = useState([]);
   const [drinks, setDrinks] = useState([]);
   const [categorysMeals, setCategorysMeals] = useState([]);
   const [categorysDrinks, setCategorysDrinks] = useState([]);
-  const { makeFetch } = useFetch();
 
   useEffect(() => {
     const performFetch = async () => {
+      const makeFetch = async (url) => {
+        const res = await fetch(url);
+        const data = await res.json();
+        return data;
+      };
+
       const dataDrinks = await makeFetch(
         'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=',
       );
@@ -32,8 +36,9 @@ function RecipesProvider({ children }) {
       );
       setCategorysDrinks(dataCategorysDrinks.drinks);
     };
+    console.log('Estou executando');
     performFetch();
-  }, [makeFetch]);
+  }, []);
 
   const values = useMemo(
     () => ({
@@ -41,10 +46,9 @@ function RecipesProvider({ children }) {
       drinks,
       categorysMeals,
       categorysDrinks,
-      makeFetch,
       setMeals,
     }),
-    [meals, drinks, categorysMeals, categorysDrinks, makeFetch],
+    [meals, drinks, categorysMeals, categorysDrinks],
   );
 
   return (
