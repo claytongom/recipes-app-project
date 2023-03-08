@@ -45,7 +45,7 @@ function Recipes(props) {
     }
   };
 
-  const veryFilterFunction = (name) => {
+  const toggleFunction = (name) => {
     if (filterActive === name) {
       removeFilter();
     } else {
@@ -61,7 +61,7 @@ function Recipes(props) {
           <button
             data-testid={ `${item.strCategory}-category-filter` }
             key={ index }
-            onClick={ () => veryFilterFunction(item.strCategory) }
+            onClick={ () => toggleFunction(item.strCategory) }
           >
             {item.strCategory}
           </button>
