@@ -24,22 +24,27 @@ function Meals() {
     <div>
       <h1>Meals</h1>
       <Header
-        headerTypes={
-          { title: 'Comidas', searchButton: true, profileIcone: true, drink: false }
-        }
+        headerTypes={ {
+          title: 'Comidas',
+          searchButton: true,
+          profileIcone: true,
+          drink: false,
+        } }
       />
-      <Recipes recipe={ meals } categorys={ categorysMeals } />
+      <Recipes recipe={ meals } categorys={ categorysMeals } type="meals" />
       {data.map((recipe, index) => {
         const { idMeal, strInstructions, strMeal, strMealThumb } = recipe;
         const max = 12;
         if (index < max) {
-          return (<RecipesCard
-            key={ idMeal }
-            index={ index }
-            name={ strMeal }
-            recipe={ strInstructions }
-            image={ strMealThumb }
-          />);
+          return (
+            <RecipesCard
+              key={ idMeal }
+              index={ index }
+              name={ strMeal }
+              recipe={ strInstructions }
+              image={ strMealThumb }
+            />
+          );
         }
         return null;
       })}

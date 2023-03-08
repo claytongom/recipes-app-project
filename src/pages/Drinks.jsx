@@ -30,7 +30,7 @@ function Drinks() {
           drink: true,
         } }
       />
-      <Recipes recipe={ drinks } categorys={ categorysDrinks } />
+      <Recipes recipe={ drinks } categorys={ categorysDrinks } type="drinks" />
       {data.map((recipe, index) => {
         const { idDrink, strInstructions, strDrink, strDrinkThumb } = recipe;
         const max = 12;

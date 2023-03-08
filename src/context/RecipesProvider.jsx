@@ -36,7 +36,6 @@ function RecipesProvider({ children }) {
       );
       setCategorysDrinks(dataCategorysDrinks.drinks);
     };
-    console.log('Estou executando');
     performFetch();
   }, []);
 
@@ -47,6 +46,7 @@ function RecipesProvider({ children }) {
       categorysMeals,
       categorysDrinks,
       setMeals,
+      setDrinks,
     }),
     [meals, drinks, categorysMeals, categorysDrinks],
   );
