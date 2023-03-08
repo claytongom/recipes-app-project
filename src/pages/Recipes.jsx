@@ -11,10 +11,10 @@ function Recipes(props) {
   return (
     <main>
       {
-        categorys.map((item) => (
+        categorys.map((item, index) => (
           <button
             data-testid={ `${item.strCategory}-category-filter` }
-            key={ item.strCategory }
+            key={ index }
           >
             { item.strCategory }
           </button>
