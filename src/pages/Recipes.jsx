@@ -44,7 +44,7 @@ function Recipes(props) {
 }
 
 Recipes.propTypes = {
-  recipe: PropTypes.arrayOf().isRequired,
+  recipe: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   categorys: PropTypes.arrayOf(PropTypes.shape({
     strCategory: PropTypes.string.isRequired,
   })).isRequired,
