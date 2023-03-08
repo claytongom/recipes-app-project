@@ -10,7 +10,6 @@ import DoneRecipes from './pages/DoneRecipes';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar';
 import FavoritesRecipes from './pages/FavoritesRecipes';
-
 function App() {
   return (
     <Switch>

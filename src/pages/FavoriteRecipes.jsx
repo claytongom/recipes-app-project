@@ -1,12 +1,12 @@
 import React from 'react';
 import Header from '../components/Header';
 
-function Recipes() {
+function FavoriteRecipes() {
   return (
     <div>
       <Header
         headerTypes={ {
-          title: 'Done Recipes',
+          title: 'Favorite Recipes',
           searchButton: false,
           profileIcone: true,
           drink: false,
@@ -16,4 +16,4 @@ function Recipes() {
   );
 }
 
-export default Recipes;
+export default FavoriteRecipes;
