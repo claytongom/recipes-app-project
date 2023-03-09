@@ -15,7 +15,7 @@ function RecipesCard(props) {
 
 RecipesCard.propTypes = {
   image: PropTypes.string.isRequired,
-  index: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   recipe: PropTypes.string.isRequired,
 };
