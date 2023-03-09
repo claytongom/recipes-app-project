@@ -11,9 +11,13 @@ function RecipesProvider({ children }) {
   useEffect(() => {
     const performFetch = async () => {
       const makeFetch = async (url) => {
-        const res = await fetch(url);
-        const data = await res.json();
-        return data;
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+          return data;
+        } catch (error) {
+          console.log(error);
+        }
       };
 
       const dataDrinks = await makeFetch(
