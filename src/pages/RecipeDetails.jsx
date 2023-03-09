@@ -20,6 +20,23 @@ function RecipeDetails() {
   const [copied, setCopied] = useState(false);
   const history = useHistory();
 
+  useEffect(() => {
+    if (!localStorage.getItem('inProgressRecipes')) {
+      const inProgressRecipes = {
+        drinks: {},
+        meals: {},
+      };
+
+      localStorage.setItem(
+        'inProgressRecipes',
+        JSON.stringify(inProgressRecipes),
+      );
+    }
+    if (!localStorage.getItem('favoriteRecipes')) {
+      localStorage.setItem('favoriteRecipes', JSON.stringify([]));
+    }
+  }, []);
+
   // Função para definir a url para o fetch e verificar se é meal ou drink.
   const getUrl = () => {
     if (pathname.includes(MEALS)) {
@@ -37,18 +54,26 @@ function RecipeDetails() {
 
   // Verifica se essa receita já foi feita anteriormente
   const VerifyDoneRecipes = () => {
-    const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes'));
-    const searchID = doneRecipes.findIndex((el) => el.id === id);
-    return searchID >= 0;
+    if (localStorage.getItem('doneRecipes')) {
+      const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes'));
+      const searchID = doneRecipes.findIndex((el) => el.id === id);
+      return searchID >= 0;
+    }
   };
   // Verifica se a receita está na lista de receitas em progresso
   const VerifyInProgressRecipes = () => {
-    const inProgressRecipes = JSON.parse(localStorage.getItem('inProgressRecipes'));
-    const KeysProgressRecipes = urlAndType.type === 'meals'
-      ? Object.keys(inProgressRecipes.meals)
-      : Object.keys(inProgressRecipes.drinks);
-    const searchProgressRecipes = KeysProgressRecipes.findIndex((el) => el === id);
-    return searchProgressRecipes >= 0;
+    if (localStorage.getItem('inProgressRecipes')) {
+      const inProgressRecipes = JSON.parse(
+        localStorage.getItem('inProgressRecipes'),
+      );
+      const KeysProgressRecipes = urlAndType.type === 'meals'
+        ? Object.keys(inProgressRecipes.meals)
+        : Object.keys(inProgressRecipes.drinks);
+      const searchProgressRecipes = KeysProgressRecipes.findIndex(
+        (el) => el === id,
+      );
+      return searchProgressRecipes >= 0;
+    }
   };
 
   const getDataApiDrinkAndMeal = async () => {
@@ -128,31 +153,52 @@ function RecipeDetails() {
     }
   }, [copied]);
 
-  // Função para adicionar a receita no local storage
+  // Função do botão Start Recipe
+  const startRecFunc = () => {
+    const { type } = urlAndType;
+    if (localStorage.getItem('inProgressRecipes')) {
+      const inProgressRecipes = JSON.parse(
+        localStorage.getItem('inProgressRecipes'),
+      );
+      if (!inProgressRecipes[type][id]) {
+        const newProgress = {
+          ...inProgressRecipes,
+          [type]: {
+            ...inProgressRecipes[type],
+            [id]: strIngredient,
+          },
+        };
+        localStorage.setItem('inProgressRecipes', JSON.stringify(newProgress));
+      }
+    }
+    history.push(`/${urlAndType.type}/${id}/in-progress`);
+  };
 
-  // const saveFavRecipe = () => {
-  //   const recipe = {
-  //     id: recipeData.idMeal || recipeData.idDrink,
-  //     type: urlAndType.type,
-  //     nationality: recipeData.strArea,
-  //     category: recipeData.strCategory || '',
-  //     alcoholicOrNot: recipeData.strAlcoholic || '',
-  //     name: recipeData.strMeal || recipeData.strDrink,
-  //     image: recipeData.strMealThumb || recipeData.strDrinkThumb,
-  //   };
-  //   if (localStorage.getItem('favoriteRecipes')) {
-  //     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-  //     if (favoriteRecipes.length === 0) {
-  //       localStorage
-  //         .setItem('favoriteRecipes', JSON
-  //           .stringify([recipe]));
-  //     } else if (!favoriteRecipes.some((el) => el.name === recipe.name)) {
-  //       localStorage
-  //         .setItem('favoriteRecipes', JSON
-  //           .stringify([...favoriteRecipes, recipe]));
-  //     }
-  //   }
-  // };
+  // Função para adicionar a receita no local storage
+  const saveFavRecipe = () => {
+    const recipe = {
+      id: recipeData.idMeal || recipeData.idDrink,
+      type: urlAndType.type === MEALS ? 'meal' : 'drink',
+      nationality: recipeData.strArea || '',
+      category: recipeData.strCategory || '',
+      alcoholicOrNot: recipeData.strAlcoholic || '',
+      name: recipeData.strMeal || recipeData.strDrink,
+      image: recipeData.strMealThumb || recipeData.strDrinkThumb,
+    };
+    if (localStorage.getItem('favoriteRecipes')) {
+      const favoriteRecipes = JSON.parse(
+        localStorage.getItem('favoriteRecipes'),
+      );
+      if (favoriteRecipes.length === 0) {
+        localStorage.setItem('favoriteRecipes', JSON.stringify([recipe]));
+      } else if (!favoriteRecipes.some((el) => el.name === recipe.name)) {
+        localStorage.setItem(
+          'favoriteRecipes',
+          JSON.stringify([...favoriteRecipes, recipe]),
+        );
+      }
+    }
+  };
 
   const ingredientElements = strIngredient.map((item, index) => {
     const { ingredient, measure } = item;
@@ -197,33 +243,19 @@ function RecipeDetails() {
         allow="accelerometer; autoplay; clipboard-write; encrypted-media"
         allowFullScreen
       />
-      <Carousel
-        dataApiDrinks={ dataApiDrinks }
-        dataApiMeals={ dataApiMeals }
-        type={ urlAndType.type }
-      />
 
-      {!VerifyDoneRecipes() && !VerifyInProgressRecipes()
-      && (
+      {!VerifyDoneRecipes() && (
         <button
           data-testid="start-recipe-btn"
           className="FixedBottom"
+          onClick={ startRecFunc }
         >
-          Start Recipe
-        </button>)}
-
-      {VerifyInProgressRecipes() && !VerifyDoneRecipes()
-      && (
-        <button
-          data-testid="start-recipe-btn"
-          className="FixedBottom"
-          onClick={ () => history.push(`/${urlAndType.type}/${id}/in-progress`) }
-        >
-          Continue Recipe
+          {VerifyInProgressRecipes() ? 'Continue Recipe' : 'Start Recipe'}
         </button>
-      ) }
+      )}
+
       <div className="FixedBottomLeft">
-        {copied && (<p>Link copied!</p>)}
+        {copied && <p>Link copied!</p>}
         <button
           data-testid="share-btn"
           onClick={ () => {
@@ -234,10 +266,7 @@ function RecipeDetails() {
           Compartilhar
         </button>
 
-        <button
-          data-testid="favorite-btn"
-          onClick={ saveFavRecipe }
-        >
+        <button data-testid="favorite-btn" onClick={ saveFavRecipe }>
           Favoritar
         </button>
       </div>

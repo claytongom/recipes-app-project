@@ -9,11 +9,20 @@ import Profile from './pages/Profile';
 import DoneRecipes from './pages/DoneRecipes';
 import FavoriteRecipes from './pages/FavoriteRecipes';
 import RecipeDetails from './pages/RecipeDetails';
+import RecipeInProgress from './pages/RecipeInProgress';
 
 function App() {
   return (
     <Switch>
       <Route path="/profile" component={ Profile } />
+      <Route
+        path="/meals/:id/in-progress"
+        render={ (props) => <RecipeInProgress { ...props } /> }
+      />
+      <Route
+        path="/drinks/:id/in-progress"
+        render={ (props) => <RecipeInProgress { ...props } /> }
+      />
       <Route
         path="/meals/:id"
         render={ (props) => <RecipeDetails { ...props } /> }
