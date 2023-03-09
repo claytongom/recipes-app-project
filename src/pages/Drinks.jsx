@@ -38,7 +38,6 @@ function Drinks() {
 
   return (
     <div>
-      <h1>Drinks</h1>
       <Header
         headerTypes={ {
           title: 'Drinks',
