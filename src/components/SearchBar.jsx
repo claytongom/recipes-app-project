@@ -24,7 +24,7 @@ function SearchBar(props) {
       URL = URL_API_FIRST_LETTER;
       break;
     default:
-      break;
+      return;
     }
     const responseAPI = await fetch(URL);
     const dataAPI = await responseAPI.json();

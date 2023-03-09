@@ -5,7 +5,6 @@ function RecipesCard(props) {
   const { index, name, image, recipe } = props;
   return (
     <div>
-      RecipesCard
       <p data-testid={ `${index}-card-name` }>{ name }</p>
       <img data-testid={ `${index}-card-img` } src={ image } alt={ `Receita ${name}` } />
       <p data-testid={ `${index}-recipe-card` }>{ recipe }</p>
@@ -15,7 +14,7 @@ function RecipesCard(props) {
 
 RecipesCard.propTypes = {
   image: PropTypes.string.isRequired,
-  index: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   recipe: PropTypes.string.isRequired,
 };

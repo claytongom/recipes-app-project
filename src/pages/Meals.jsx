@@ -28,7 +28,7 @@ function Meals() {
           key={ idMeal }
           index={ index }
           name={ strMeal }
-          recipe={ strInstructions }
+          recipe={ strInstructions || '' }
           image={ strMealThumb }
         />
       );
