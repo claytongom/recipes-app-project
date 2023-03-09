@@ -19,12 +19,6 @@ function RecipeDetails() {
   const [dataApiMeals, setDataApiMeals] = useState([]);
   const [copied, setCopied] = useState(false);
   const history = useHistory();
-  // Setando provisoriamente as informações no localstorage
-  localStorage
-    .setItem('doneRecipes', JSON.stringify([{ id: '52908' }]));
-  localStorage
-    .setItem('inProgressRecipes', JSON
-      .stringify({ meals: { 52771: [] }, drinks: { 178319: [] } }));
 
   // Função para definir a url para o fetch e verificar se é meal ou drink.
   const getUrl = () => {
@@ -120,6 +114,46 @@ function RecipeDetails() {
     }
   }, [recipeData.strYoutube]);
 
+  // useEffect para remover o elemento criado com a msg de link copiado
+
+  useEffect(() => {
+    if (copied) {
+      const time = 3000;
+      const copyTimeOut = setTimeout(() => {
+        setCopied(false);
+      }, time);
+      return () => {
+        clearTimeout(copyTimeOut);
+      };
+    }
+  }, [copied]);
+
+  // Função para adicionar a receita no local storage
+
+  // const saveFavRecipe = () => {
+  //   const recipe = {
+  //     id: recipeData.idMeal || recipeData.idDrink,
+  //     type: urlAndType.type,
+  //     nationality: recipeData.strArea,
+  //     category: recipeData.strCategory || '',
+  //     alcoholicOrNot: recipeData.strAlcoholic || '',
+  //     name: recipeData.strMeal || recipeData.strDrink,
+  //     image: recipeData.strMealThumb || recipeData.strDrinkThumb,
+  //   };
+  //   if (localStorage.getItem('favoriteRecipes')) {
+  //     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+  //     if (favoriteRecipes.length === 0) {
+  //       localStorage
+  //         .setItem('favoriteRecipes', JSON
+  //           .stringify([recipe]));
+  //     } else if (!favoriteRecipes.some((el) => el.name === recipe.name)) {
+  //       localStorage
+  //         .setItem('favoriteRecipes', JSON
+  //           .stringify([...favoriteRecipes, recipe]));
+  //     }
+  //   }
+  // };
+
   const ingredientElements = strIngredient.map((item, index) => {
     const { ingredient, measure } = item;
 
@@ -168,25 +202,28 @@ function RecipeDetails() {
         dataApiMeals={ dataApiMeals }
         type={ urlAndType.type }
       />
-      <div className="FixedBottom">
-        {!VerifyDoneRecipes() && !VerifyInProgressRecipes()
+
+      {!VerifyDoneRecipes() && !VerifyInProgressRecipes()
       && (
         <button
-          className="FixedBottom"
           data-testid="start-recipe-btn"
+          className="FixedBottom"
         >
           Start Recipe
         </button>)}
 
-        {VerifyInProgressRecipes() && !VerifyDoneRecipes()
+      {VerifyInProgressRecipes() && !VerifyDoneRecipes()
       && (
         <button
           data-testid="start-recipe-btn"
+          className="FixedBottom"
           onClick={ () => history.push(`/${urlAndType.type}/${id}/in-progress`) }
         >
           Continue Recipe
         </button>
       ) }
+      <div className="FixedBottomLeft">
+        {copied && (<p>Link copied!</p>)}
         <button
           data-testid="share-btn"
           onClick={ () => {
@@ -197,14 +234,14 @@ function RecipeDetails() {
           Compartilhar
         </button>
 
-        {copied && (<p>Link copied!</p>)}
-
-        <button data-testid="favorite-btn">
+        <button
+          data-testid="favorite-btn"
+          onClick={ saveFavRecipe }
+        >
           Favoritar
         </button>
       </div>
     </div>
   );
 }
-
 export default RecipeDetails;

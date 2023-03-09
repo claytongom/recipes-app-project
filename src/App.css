@@ -15,3 +15,9 @@
   position: fixed;
   bottom: 0px;
 }
+
+.FixedBottomLeft{
+  position: fixed;
+  bottom: 0px;
+  left: 100px;
+}
