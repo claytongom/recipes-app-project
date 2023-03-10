@@ -41,6 +41,7 @@ function DetailsButtons(props) {
           onClick={ () => {
             copy(document.location.href);
             setCopied(true);
+            console.log('oi');
           } }
         >
           Compartilhar

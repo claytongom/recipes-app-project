@@ -28,6 +28,21 @@ export const fetchCaterorys = async (type, fn) => {
   }
 };
 
+export const fetchByIds = async (type, id, fn) => {
+  if (type === 'Meals') {
+    const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    fn(data.meals[0]);
+  }
+  if (type === 'Drinks') {
+    const url = `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    fn(data.drinks[0]);
+  }
+};
+
 export const fetchByFilter = async (type, filter, fn) => {
   if (type === 'Meals') {
     const url = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${filter}`;
