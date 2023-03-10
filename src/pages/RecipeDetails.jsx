@@ -22,7 +22,7 @@ function RecipeDetails() {
   const { id } = useParams();
   const { pathname } = useLocation();
   const history = useHistory();
-  const [recipeData, setRecipeData] = useState([]);
+  const [recipeData, setRecipeData] = useState({});
   const [strIngredient, setStrIngredient] = useState([]);
   const [video, setVideo] = useState('');
   // const [dataApiDrinks, setDataApiDrinks] = useState([]);
