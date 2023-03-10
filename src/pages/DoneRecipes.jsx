@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import shareIcon from '../images/shareIcon.svg';
 
@@ -61,18 +62,27 @@ function Recipes() {
           </button>
           {doneRecipesItens.map((recipe, index) => (
             <div key={ index }>
-              <img
-                data-testid={ `${index}-horizontal-image` }
-                src={ recipe.image }
-                alt={ recipe.name }
-              />
+              <Link to={ `${recipe.type}s/${recipe.id}` }>
+                <img
+                  width="100"
+                  height="100"
+                  data-testid={ `${index}-horizontal-image` }
+                  src={ recipe.image }
+                  alt={ recipe.name }
+                />
+              </Link>
               <span data-testid={ `${index}-horizontal-top-text` }>
                 {recipe.type === 'meal'
                   ? `${recipe.nationality} - ${recipe.category}` : recipe.alcoholicOrNot}
               </span>
-              <span data-testid={ `${index}-horizontal-name` }>
-                {recipe.name}
-              </span>
+              <Link to={ `/${recipe.type}s/${recipe.id}` }>
+                <span
+                  data-testid={ `${index}-horizontal-name` }
+                >
+                  {recipe.name}
+                </span>
+              </Link>
+
               <span data-testid={ `${index}-horizontal-done-date` }>
                 {recipe.doneDate}
               </span>
