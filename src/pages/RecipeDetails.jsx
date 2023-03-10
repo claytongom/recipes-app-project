@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams, useHistory } from 'react-router-dom';
 import copy from 'clipboard-copy';
+import whiteHeart from '../images/whiteHeartIcon.svg';
+import blackHeart from '../images/blackHeartIcon.svg';
 import Carousel from '../components/Carousel';
 // import ProgressMenu from '../components/ProgressMenu';
 
@@ -19,6 +21,7 @@ function RecipeDetails() {
   const [dataApiMeals, setDataApiMeals] = useState([]);
   const [copied, setCopied] = useState(false);
   const history = useHistory();
+  const [favRecipe, setFavRecipe] = useState([]);
 
   useEffect(() => {
     if (!localStorage.getItem('inProgressRecipes')) {
@@ -34,6 +37,11 @@ function RecipeDetails() {
     }
     if (!localStorage.getItem('favoriteRecipes')) {
       localStorage.setItem('favoriteRecipes', JSON.stringify([]));
+    }
+
+    if (localStorage.getItem('favoriteRecipes')) {
+      const favs = JSON.parse(localStorage.getItem('favoriteRecipes'));
+      setFavRecipe(favs);
     }
   }, []);
 
@@ -189,6 +197,7 @@ function RecipeDetails() {
       const favoriteRecipes = JSON.parse(
         localStorage.getItem('favoriteRecipes'),
       );
+
       if (favoriteRecipes.length === 0) {
         localStorage.setItem('favoriteRecipes', JSON.stringify([recipe]));
       } else if (!favoriteRecipes.some((el) => el.name === recipe.name)) {
@@ -265,9 +274,11 @@ function RecipeDetails() {
         >
           Compartilhar
         </button>
-
-        <button data-testid="favorite-btn" onClick={ saveFavRecipe }>
+        <button
+          onClick={ saveFavRecipe }
+        >
           Favoritar
+          <img src={ favRecipe.some((el) => el.id === id) ? blackHeart : whiteHeart } alt="coração" data-testid="favorite-btn" />
         </button>
       </div>
     </div>
