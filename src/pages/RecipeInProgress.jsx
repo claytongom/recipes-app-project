@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import copy from 'clipboard-copy';
+// import copy from 'clipboard-copy';
 import { fetchByIds } from '../services/fetchs';
 import getTitleAndButton from '../helpers/getTitleAndButton';
-import whiteHeart from '../images/whiteHeartIcon.svg';
-import blackHeart from '../images/blackHeartIcon.svg';
+// import whiteHeart from '../images/whiteHeartIcon.svg';
+// import blackHeart from '../images/blackHeartIcon.svg';
 
 export default function RecipesInProgress() {
   const { pathname } = useLocation();
@@ -37,8 +37,8 @@ export default function RecipesInProgress() {
   }, [recipeData]);
 
   const handleChange = (index) => {
-    const newInstructions = instructions;
-    newInstructions[index].checked = true;
+    const newInstructions = [...instructions];
+    newInstructions[index].checked = !newInstructions[index].checked;
     setInstructions(newInstructions);
   };
 
@@ -50,7 +50,7 @@ export default function RecipesInProgress() {
         alt="Foto da receita"
       />
       <h1 data-testid="recipe-title">{ recipeData.strDrink || recipeData.strMeal }</h1>
-      <div className="FixedBottomLeft">
+      {/* <div className="FixedBottomLeft">
         {copied && <p>Link copied!</p>}
         <button
           data-testid="share-btn"
@@ -69,7 +69,7 @@ export default function RecipesInProgress() {
             data-testid="favorite-btn"
           />
         </button>
-      </div>
+      </div> */}
       <h2 data-testid="recipe-category">{ recipeData.strCategory }</h2>
       <h3 data-testid="instructions">Instruções</h3>
       { instructions.map((el, index) => (
