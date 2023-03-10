@@ -1,23 +1,16 @@
-#Carousel{
-  display: flex;
-    margin-top: 50px;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-.card{
+.card {
   border: 1px solid red;
   display: flex;
   width: 180px;
 }
 
-.FixedBottom{
+.FixedBottom {
+  bottom: 0;
   position: fixed;
-  bottom: 0px;
 }
 
-.FixedBottomLeft{
-  position: fixed;
-  bottom: 0px;
+.FixedBottomLeft {
+  bottom: 0;
   left: 100px;
+  position: fixed;
 }
