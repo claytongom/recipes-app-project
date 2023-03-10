@@ -6,20 +6,29 @@ import shareIcon from '../images/shareIcon.svg';
 function Recipes() {
   const [doneRecipesItens, setDoneRecipesItens] = useState([]);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes')) || [];
     setDoneRecipesItens([...doneRecipes]);
-    console.log(doneRecipes);
   }, []);
 
-  console.log(doneRecipesItens);
+  useEffect(() => {
+    const filterDoneRecipes = () => {
+      const filterDoneRecipesList = JSON.parse(localStorage.getItem('doneRecipes'));
+      if (filter === 'meals') {
+        const listFiltered = filterDoneRecipesList.filter(({ type }) => type === 'meal');
+        setDoneRecipesItens([...listFiltered]);
+      } else if (filter === 'drinks') {
+        const listFiltered = filterDoneRecipesList.filter(({ type }) => type === 'drink');
+        setDoneRecipesItens([...listFiltered]);
+      } else {
+        setDoneRecipesItens([...filterDoneRecipesList]);
+      }
+    };
 
-  const setFilter = ({ target: { name } }) => {
-    const filterDoneRecipesList = JSON.parse(localStorage.getItem('doneRecipes'));
-    const listFiltered = filterDoneRecipesList.filter(({ type }) => type.includes(name));
-    setDoneRecipesItens([...listFiltered]);
-  };
+    filterDoneRecipes();
+  }, [filter]);
 
   const copyToClipboard = ({ type, id }) => {
     const url = `http://localhost:3000/${type}s/${id}`;
@@ -98,7 +107,9 @@ function Recipes() {
                 type="button"
                 data-testid={ `${index}-horizontal-share-btn` }
                 src={ shareIcon }
-                onClick={ () => copyToClipboard(recipe) }
+                onClick={
+                  () => copyToClipboard(recipe)
+                }
               >
                 <img
                   src={ shareIcon }
