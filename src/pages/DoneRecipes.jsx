@@ -3,35 +3,28 @@ import Header from '../components/Header';
 import shareIcon from '../images/shareIcon.svg';
 
 function Recipes() {
-  // criar estado controlar qual categoria estou filtrando
   const [doneRecipesItens, setDoneRecipesItens] = useState([]);
-  // pegar os dados do localStorage
+  const [linkCopied, setLinkCopied] = useState(false);
+
   useEffect(() => {
-    // localStorage.setItem('doneRecipes', JSON.stringify([{
-    // id: 52908,
-    // type: 'meal',
-    // nationality: 'French',
-    // category: 'Vegetarian',
-    // alcoholicOrNot: '',
-    // name: 'Ratatouille',
-    // image: 'https://www.themealdb.com/images/media/meals/wrpwuu1511786491.jpg',
-    // doneDate: '2023-03-08',
-    // tags: ['Vegetables', 'SideDish'] }]));
     const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes')) || [];
     setDoneRecipesItens([...doneRecipes]);
     console.log(doneRecipes);
   }, []);
 
   console.log(doneRecipesItens);
-  // fazer um map pois é um array de receitas
-  // sugestão 1: criar um estado para guardar as receitas filtradas
+
   const setFilter = ({ target: { name } }) => {
     const filterDoneRecipesList = JSON.parse(localStorage.getItem('doneRecipes'));
     const listFiltered = filterDoneRecipesList.filter(({ type }) => type.includes(name));
     setDoneRecipesItens([...listFiltered]);
   };
-  // sugestão 2: antes do map realizar um filter e economizar uma atualização de estado
-  // dica: usando operador ternário eu posso decidir o que imprimir na tela if else
+
+  const copyToClipboard = ({ type, id }) => {
+    const url = `http://localhost:3000/${type}s/${id}`;
+    navigator.clipboard.writeText(url);
+    setLinkCopied(true);
+  };
 
   return (
     <div>
@@ -91,16 +84,18 @@ function Recipes() {
                   {item}
                 </span>
               ))}
-              <img
-                src="src/images/shareIcon.svg"
-                alt="botão de compartilhar receita"
+              <button
+                type="button"
                 data-testid={ `${index}-horizontal-share-btn` }
-              />
-              <img
                 src={ shareIcon }
-                alt="share"
-                data-testid={ `0-${index}-horizontal-favorite-btn` }
-              />
+                onClick={ () => copyToClipboard(recipe) }
+              >
+                <img
+                  src={ shareIcon }
+                  alt="share"
+                />
+              </button>
+              {linkCopied && <span>Link copied!</span>}
             </div>
           ))}
         </div>
