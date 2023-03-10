@@ -4,9 +4,12 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import RecipesCard from '../components/RecipesCard';
 import HeaderContext from '../context/HeaderContext';
+import RecipesContext from '../context/RecipesContext';
+import Recipes from './Recipes';
 
 function Drinks() {
   const { data } = useContext(HeaderContext);
+  const { drinks, categorysDrinks } = useContext(RecipesContext);
 
   const history = useHistory();
 
@@ -16,28 +19,39 @@ function Drinks() {
     }
   }, [data, history]);
 
+  const dataList = data.map((recipe, index) => {
+    const { idDrink, strInstructions, strDrink, strDrinkThumb } = recipe;
+    const max = 12;
+    if (index < max) {
+      return (
+        <RecipesCard
+          key={ idDrink }
+          index={ index }
+          name={ strDrink }
+          recipe={ strInstructions }
+          image={ strDrinkThumb }
+        />
+      );
+    }
+    return null;
+  });
+
   return (
     <div>
-      <h1>Drinks</h1>
       <Header
-        headerTypes={
-          { title: 'Drinks', searchButton: true, profileIcone: true, drink: true }
-        }
+        headerTypes={ {
+          title: 'Drinks',
+          searchButton: true,
+          profileIcone: true,
+          drink: true,
+        } }
       />
-      {data.map((recipe, index) => {
-        const { idDrink, strInstructions, strDrink, strDrinkThumb } = recipe;
-        const max = 12;
-        if (index < max) {
-          return (<RecipesCard
-            key={ idDrink }
-            index={ index }
-            name={ strDrink }
-            recipe={ strInstructions }
-            image={ strDrinkThumb }
-          />);
-        }
-        return null;
-      })}
+
+      {data.length > 0 ? (
+        dataList
+      ) : (
+        <Recipes recipe={ drinks } categorys={ categorysDrinks } type="drinks" />
+      )}
       <Footer />
     </div>
   );

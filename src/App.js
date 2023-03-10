@@ -7,6 +7,8 @@ import Meals from './pages/Meals';
 import Drinks from './pages/Drinks';
 import Profile from './pages/Profile';
 import DoneRecipes from './pages/DoneRecipes';
+import Header from './components/Header';
+import SearchBar from './components/SearchBar';
 import FavoriteRecipes from './pages/FavoriteRecipes';
 import RecipeDetails from './pages/RecipeDetails';
 import RecipeInProgress from './pages/RecipeInProgress';
@@ -36,6 +38,8 @@ function App() {
       <Route path="/done-recipes" component={ DoneRecipes } />
       <Route path="/favorite-recipes" component={ FavoriteRecipes } />
       <Route exact path="/" component={ Login } />
+      <Route exact path="/header" component={ Header } />
+      <Route exact path="/searchbar" component={ SearchBar } />
     </Switch>
   );
 }
