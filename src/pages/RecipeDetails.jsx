@@ -130,7 +130,11 @@ function RecipeDetails() {
   // Função do botão Start Recipe
   const startRecFunc = () => {
     const { type } = urlAndType;
-    addToInProgressRecipes(id, type, strIngredient);
+    const objectData = strIngredient.map((ingredient) => ({
+      ...ingredient,
+      checked: false,
+    }));
+    addToInProgressRecipes(id, type, objectData);
     history.push(`/${type}/${id}/in-progress`);
   };
 
