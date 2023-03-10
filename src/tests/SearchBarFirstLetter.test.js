@@ -1,6 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Meals from '../pages/Meals';
+import { act } from 'react-dom/test-utils';
+import App from '../App';
 import mockSearchFirstLetter from './helpers/Mocks/SearchBar/mockSearchFirstLetter';
 import renderWithRouterAndContextProvider from './helpers/renderWithRouterAndContextProvider';
 
@@ -9,7 +10,8 @@ describe('Testando o componente "SearchBar"', () => {
     jest.clearAllMocks();
   });
   test('Testando a pesquisa por primeira letra', async () => {
-    renderWithRouterAndContextProvider(<Meals />);
+    const { history } = renderWithRouterAndContextProvider(<App />);
+    act(() => history.push('/meals'));
 
     // Acessando os elementos.
     const btnInitSearch = screen.getByRole('img', { name: /search/i });
@@ -24,16 +26,14 @@ describe('Testando o componente "SearchBar"', () => {
       json: jest.fn().mockResolvedValue(mockSearchFirstLetter),
     });
 
-    // Interagindo com os elementos
-    userEvent.type(searchInput, 'i');
+    userEvent.type(searchInput, 'e');
     userEvent.click(radio);
     userEvent.click(searchBtn);
 
     await waitFor(() => {
-      expect(screen.getByText(/irish stew/i)).toBeInTheDocument();
+      expect(screen.getByText(/eton mess/i)).toBeInTheDocument();
     });
 
-    const img = screen.getByRole('img', { name: /receita irish stew/i });
-    expect(img).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /eton mess/i })).toBeInTheDocument();
   });
 });

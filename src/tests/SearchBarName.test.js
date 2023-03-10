@@ -1,6 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Drinks from '../pages/Drinks';
+import { act } from 'react-dom/test-utils';
+import App from '../App';
 import mockSearchName from './helpers/Mocks/SearchBar/mockSearchName';
 import renderWithRouterAndContextProvider from './helpers/renderWithRouterAndContextProvider';
 
@@ -9,7 +10,8 @@ describe('Testando o componente "SearchBar"', () => {
     jest.clearAllMocks();
   });
   test('Testando a pesquisa por nome', async () => {
-    renderWithRouterAndContextProvider(<Drinks />);
+    const { history } = renderWithRouterAndContextProvider(<App />);
+    act(() => history.push('/drinks'));
 
     // Acessando os elementos.
     const btnInitSearch = screen.getByRole('img', { name: /search/i });
@@ -24,8 +26,7 @@ describe('Testando o componente "SearchBar"', () => {
       json: jest.fn().mockResolvedValue(mockSearchName),
     });
 
-    // Interagindo com os elementos
-    userEvent.type(searchInput, 'margarita');
+    userEvent.type(searchInput, 'Margarita');
     userEvent.click(radio);
     userEvent.click(searchBtn);
 
@@ -33,7 +34,8 @@ describe('Testando o componente "SearchBar"', () => {
       expect(screen.getByText(/blue margarita/i)).toBeInTheDocument();
     });
 
-    const img = screen.getByRole('img', { name: /receita margarita/i });
-    expect(img).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: /blue margarita/i }),
+    ).toBeInTheDocument();
   });
 });

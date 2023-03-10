@@ -3,8 +3,6 @@ import './App.css';
 import { Switch, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './pages/Login';
-import Meals from './pages/Meals';
-import Drinks from './pages/Drinks';
 import Profile from './pages/Profile';
 import DoneRecipes from './pages/DoneRecipes';
 import Header from './components/Header';
@@ -13,10 +11,12 @@ import FavoriteRecipes from './pages/FavoriteRecipes';
 import RecipeDetails from './pages/RecipeDetails';
 import RecipeInProgress from './pages/RecipeInProgress';
 
+import Recipes from './pages/Recipes';
+
 function App() {
   return (
     <Switch>
-      <Route path="/profile" component={ Profile } />
+      {/* Rotas para tela de receita em progresso */}
       <Route
         path="/meals/:id/in-progress"
         render={ (props) => <RecipeInProgress { ...props } /> }
@@ -25,16 +25,21 @@ function App() {
         path="/drinks/:id/in-progress"
         render={ (props) => <RecipeInProgress { ...props } /> }
       />
+
+      {/* Rotas para tela de detalhes de receita */}
       <Route
         path="/meals/:id"
         render={ (props) => <RecipeDetails { ...props } /> }
       />
-      <Route path="/meals" component={ Meals } />
       <Route
         path="/drinks/:id"
         render={ (props) => <RecipeDetails { ...props } /> }
       />
-      <Route path="/drinks" component={ Drinks } />
+
+      {/* Rotas para as telas */}
+      <Route path="/profile" component={ Profile } />
+      <Route path="/meals" component={ Recipes } />
+      <Route path="/drinks" component={ Recipes } />
       <Route path="/done-recipes" component={ DoneRecipes } />
       <Route path="/favorite-recipes" component={ FavoriteRecipes } />
       <Route exact path="/" component={ Login } />

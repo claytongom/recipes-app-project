@@ -1,12 +1,14 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Meals from '../pages/Meals';
+import { act } from 'react-dom/test-utils';
+import App from '../App';
 import mockSearchFirstLetter from './helpers/Mocks/SearchBar/mockSearchFirstLetter';
 import renderWithRouterAndContextProvider from './helpers/renderWithRouterAndContextProvider';
 
 describe('Testando as exceções do componente "SearchBar"', () => {
   beforeEach(() => {
-    renderWithRouterAndContextProvider(<Meals />);
+    const { history } = renderWithRouterAndContextProvider(<App />);
+    act(() => { history.push('/meals'); });
     const btnInitSearch = screen.getByRole('img', { name: /search/i });
     userEvent.click(btnInitSearch);
     jest.spyOn(global, 'fetch');
