@@ -1,104 +1,105 @@
-import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import BtnCategory from '../components/BtnCategory';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
+import RecipeCard from '../components/RecipeCard';
 import RecipesContext from '../context/RecipesContext';
-import useFetch from '../hooks/useFetch';
+import getTitleAndButton from '../helpers/getTitleAndButton';
+import { fetchCaterorys, fetchData } from '../services/fetchs';
 
-function Recipes(props) {
-  const { recipe, categorys, type } = props;
+function Recipes() {
+  const MAX_RECIPES = 12;
+  const MAX_CATEGORYS = 5;
 
-  const [filterActive, setFilterActive] = useState('');
+  const { pathname } = useLocation();
+  const history = useHistory();
+  const { recipes, setRecipes, makeSearch } = useContext(RecipesContext);
+  const { setCategorys, categorys, setFilter } = useContext(RecipesContext);
 
-  const { setMeals, setDrinks } = useContext(RecipesContext);
-  const { makeFetch } = useFetch();
+  const [pageInfo, setPageInfo] = useState({
+    title: '',
+    haveButton: true,
+  });
 
-  const MAX_LENGTH = 12;
-  const VALUE = 5;
+  // useEffect pra recuperar os dados da página e alimentar o Header.
+  useEffect(() => {
+    setPageInfo(getTitleAndButton(pathname));
+  }, [pathname]);
 
-  const removeFilter = async () => {
-    const URL_API_MEALS = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
-    const URL_API_DRINKS = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
-    if (type === 'meals') {
-      const data = await makeFetch(URL_API_MEALS);
-      setMeals(data.meals);
+  // useEffect para fazer o fetch das receitas baseado na página.
+  useEffect(() => {
+    fetchData(pageInfo.title, setRecipes);
+    fetchCaterorys(pageInfo.title, setCategorys);
+  }, [pageInfo, setRecipes, setCategorys]);
+
+  // useEffect caso só tenha um dado pesquisa e redirecionar para a página de detalhes
+  useEffect(() => {
+    if (makeSearch && recipes.length === 1) {
+      const path = pageInfo.title.toLowerCase();
+      const id = recipes[0].idMeal || recipes[0].idDrink;
+      history.push(`/${path}/${id}`);
     }
+  }, [history, pageInfo, recipes, makeSearch]);
 
-    if (type === 'drinks') {
-      const data = await makeFetch(URL_API_DRINKS);
-      setDrinks(data.drinks);
-    }
-  };
-
-  const filterByCategory = async (name) => {
-    setFilterActive(name);
-    const URL_API_MEALS = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${name}`;
-    const URL_API_DRINKS = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${name}`;
-
-    if (type === 'meals') {
-      const dataFilterByCategory = await makeFetch(URL_API_MEALS);
-      setMeals(dataFilterByCategory.meals);
-    }
-
-    if (type === 'drinks') {
-      const dataFilterByCategory = await makeFetch(URL_API_DRINKS);
-      setDrinks(dataFilterByCategory.drinks);
-    }
-  };
-
-  const toggleFunction = (name) => {
-    if (filterActive === name) {
-      removeFilter();
-    } else {
-      filterByCategory(name);
-    }
+  // Função para remover todos os filtros.
+  const removeFilter = () => {
+    fetchData(pageInfo.title, setRecipes);
+    setFilter('');
   };
 
   return (
-    <main>
-      <button data-testid="All-category-filter" onClick={ removeFilter }>All</button>
-      {categorys
-        .map((item, index) => (
-          <button
-            data-testid={ `${item.strCategory}-category-filter` }
-            key={ index }
-            onClick={ () => toggleFunction(item.strCategory) }
-          >
-            {item.strCategory}
-          </button>
-        ))
-        .slice(0, VALUE)}
-      {recipe
-        .map((item, index) => (
-          <Link
-            to={ `/${type}/${item.idDrink || item.idMeal}` }
-            key={ item.idDrink || item.idMeal }
-            data-testid={ `${index}-recipe-card` }
-          >
-            <div>
-              <img
-                data-testid={ `${index}-card-img` }
-                src={ item.strDrinkThumb || item.strMealThumb }
-                alt="foto do produto"
+    <>
+      <main>
+        {/* Renderização do header */}
+        {pageInfo && (
+          <Header
+            headerTypes={ {
+              title: pageInfo.title,
+              searchButton: pageInfo.haveButton,
+              profileIcone: true,
+              type: pageInfo.title,
+            } }
+          />
+        )}
+
+        {/* Renderização do botão All */}
+        <button data-testid="All-category-filter" onClick={ removeFilter }>
+          All
+        </button>
+
+        {/* Renderização dos botões de categoria */}
+        {categorys
+          .map((item, index) => {
+            const { strCategory } = item;
+            return (
+              <BtnCategory
+                removeFilter={ removeFilter }
+                key={ index }
+                categoryName={ strCategory }
+                type={ pageInfo.title }
               />
-              <p data-testid={ `${index}-card-name` }>
-                {item.strMeal || item.strDrink}
-              </p>
-            </div>
-          </Link>
-        ))
-        .slice(0, MAX_LENGTH)}
-    </main>
+            );
+          })
+          .slice(0, MAX_CATEGORYS)}
+
+        {/* Renderização das receitas */}
+        {recipes
+          .map((item, index) => (
+            <RecipeCard
+              key={ item.idMeal || item.idDrink }
+              id={ item.idMeal || item.idDrink }
+              index={ index }
+              name={ item.strDrink || item.strMeal }
+              image={ item.strMealThumb || item.strDrinkThumb }
+              page={ pageInfo.title.toLowerCase() }
+            />
+          ))
+          .slice(0, MAX_RECIPES)}
+      </main>
+      <Footer />
+    </>
   );
 }
-
-Recipes.propTypes = {
-  categorys: PropTypes.arrayOf(
-    PropTypes.shape({
-      strCategory: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
-  recipe: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  type: PropTypes.string.isRequired,
-};
 
 export default Recipes;

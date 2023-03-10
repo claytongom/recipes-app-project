@@ -1,13 +1,14 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Drinks from '../pages/Drinks';
-import Meals from '../pages/Meals';
+import { act } from 'react-dom/test-utils';
+import App from '../App';
 import Profile from '../pages/Profile';
 import renderWithRouterAndContextProvider from './helpers/renderWithRouterAndContextProvider';
 
 describe('Testando o componente "Header".', () => {
   test('Verifica se tá renderizando ná página Meals.', () => {
-    renderWithRouterAndContextProvider(<Meals />);
+    const { history } = renderWithRouterAndContextProvider(<App />);
+    act(() => { history.push('/meals'); });
 
     // Acessando os elementos.
     const HeaderTitle = screen.getByRole('heading', { name: /meals/i });
@@ -21,7 +22,8 @@ describe('Testando o componente "Header".', () => {
   });
 
   test('Verifica se tá renderizando ná página Drinks.', () => {
-    renderWithRouterAndContextProvider(<Drinks />);
+    const { history } = renderWithRouterAndContextProvider(<App />);
+    act(() => { history.push('/drinks'); });
 
     // Acessando os elementos.
     const HeaderTitle = screen.getByRole('heading', { name: /drinks/i });
@@ -49,7 +51,8 @@ describe('Testando o componente "Header".', () => {
   });
 
   test('Verifica se o botão profile redireciona para a página de Profile.', () => {
-    const { history } = renderWithRouterAndContextProvider(<Meals />);
+    const { history } = renderWithRouterAndContextProvider(<App />);
+    act(() => { history.push('/meals'); });
 
     // Acessando os elementos.
     const HeaderLinkProfile = screen.getByRole('img', { name: /profile/i });
@@ -63,7 +66,8 @@ describe('Testando o componente "Header".', () => {
   });
 
   test('Verifica se o botão de lupa renderiza um campo de busca e tipos de buscas, e se clicar novamente eles desaparecem.', () => {
-    renderWithRouterAndContextProvider(<Meals />);
+    const { history } = renderWithRouterAndContextProvider(<App />);
+    act(() => { history.push('/meals'); });
 
     // Acessando os elementos.
     const HeaderBtnSearch = screen.getByRole('img', { name: /search/i });

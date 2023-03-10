@@ -1,6 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Meals from '../pages/Meals';
+import { act } from 'react-dom/test-utils';
+import App from '../App';
 import mockSearchIngredient from './helpers/Mocks/SearchBar/mockSearchIngredient';
 import renderWithRouterAndContextProvider from './helpers/renderWithRouterAndContextProvider';
 
@@ -9,7 +10,8 @@ describe('Testando o componente "SearchBar"', () => {
     jest.clearAllMocks();
   });
   test('Testando a pesquisa por ingrediente', async () => {
-    renderWithRouterAndContextProvider(<Meals />);
+    const { history } = renderWithRouterAndContextProvider(<App />);
+    act(() => history.push('/meals'));
 
     // Acessando os elementos.
     const btnInitSearch = screen.getByRole('img', { name: /search/i });
@@ -24,7 +26,6 @@ describe('Testando o componente "SearchBar"', () => {
       json: jest.fn().mockResolvedValue(mockSearchIngredient),
     });
 
-    // Interagindo com os elementos
     userEvent.type(searchInput, 'carrot');
     userEvent.click(radio);
     userEvent.click(searchBtn);
@@ -36,7 +37,7 @@ describe('Testando o componente "SearchBar"', () => {
     });
 
     const img = screen.getByRole('img', {
-      name: /receita french lentils with garlic and thyme/i,
+      name: /french lentils with garlic and thyme/i,
     });
     expect(img).toBeInTheDocument();
   });
