@@ -1,49 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams, useHistory } from 'react-router-dom';
-import copy from 'clipboard-copy';
-import whiteHeart from '../images/whiteHeartIcon.svg';
-import blackHeart from '../images/blackHeartIcon.svg';
-import Carousel from '../components/Carousel';
-// import ProgressMenu from '../components/ProgressMenu';
+import {
+  addToFavoriteRecipes,
+  recipeIsInFavoriteRecipes,
+  removeFromFavoriteRecipes,
+} from '../services/favoriteRecipesLS';
+import {
+  addToInProgressRecipes,
+  recipeIsInProgressRecipes,
+} from '../services/inProgressRecipesLS';
+import { recipeIsInDoneRecipes } from '../services/doneRecipesLS';
+import DetailsCard from '../components/DetailsCard';
+import DetailsButtons from '../components/DetailsButtons';
 
 const MEALS = 'meals';
 const DRINKS = 'drinks';
-const urlApiDrinks = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
-const urlApiMeals = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
+// const urlApiDrinks = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
+// const urlApiMeals = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
 
 function RecipeDetails() {
   const { id } = useParams();
   const { pathname } = useLocation();
+  const history = useHistory();
   const [recipeData, setRecipeData] = useState([]);
   const [strIngredient, setStrIngredient] = useState([]);
   const [video, setVideo] = useState('');
-  const [dataApiDrinks, setDataApiDrinks] = useState([]);
-  const [dataApiMeals, setDataApiMeals] = useState([]);
-  const [copied, setCopied] = useState(false);
-  const history = useHistory();
-  const [favRecipe, setFavRecipe] = useState([]);
-
-  useEffect(() => {
-    if (!localStorage.getItem('inProgressRecipes')) {
-      const inProgressRecipes = {
-        drinks: {},
-        meals: {},
-      };
-
-      localStorage.setItem(
-        'inProgressRecipes',
-        JSON.stringify(inProgressRecipes),
-      );
-    }
-    if (!localStorage.getItem('favoriteRecipes')) {
-      localStorage.setItem('favoriteRecipes', JSON.stringify([]));
-    }
-
-    if (localStorage.getItem('favoriteRecipes')) {
-      const favs = JSON.parse(localStorage.getItem('favoriteRecipes'));
-      setFavRecipe(favs);
-    }
-  }, []);
+  // const [dataApiDrinks, setDataApiDrinks] = useState([]);
+  // const [dataApiMeals, setDataApiMeals] = useState([]);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isInProgress, setIsInProgress] = useState(false);
+  const [isDoneRecipe, setIsDoneRecipe] = useState(false);
 
   // Função para definir a url para o fetch e verificar se é meal ou drink.
   const getUrl = () => {
@@ -59,39 +45,22 @@ function RecipeDetails() {
     };
   };
   const [urlAndType] = useState(getUrl());
+  // ------------------------------------------------------------------------- //
 
-  // Verifica se essa receita já foi feita anteriormente
-  const VerifyDoneRecipes = () => {
-    if (localStorage.getItem('doneRecipes')) {
-      const doneRecipes = JSON.parse(localStorage.getItem('doneRecipes'));
-      const searchID = doneRecipes.findIndex((el) => el.id === id);
-      return searchID >= 0;
-    }
-  };
-  // Verifica se a receita está na lista de receitas em progresso
-  const VerifyInProgressRecipes = () => {
-    if (localStorage.getItem('inProgressRecipes')) {
-      const inProgressRecipes = JSON.parse(
-        localStorage.getItem('inProgressRecipes'),
-      );
-      const KeysProgressRecipes = urlAndType.type === 'meals'
-        ? Object.keys(inProgressRecipes.meals)
-        : Object.keys(inProgressRecipes.drinks);
-      const searchProgressRecipes = KeysProgressRecipes.findIndex(
-        (el) => el === id,
-      );
-      return searchProgressRecipes >= 0;
-    }
-  };
+  useEffect(() => {
+    recipeIsInFavoriteRecipes(id, setIsFavorite);
+    recipeIsInProgressRecipes(id, urlAndType.type, setIsInProgress);
+    recipeIsInDoneRecipes(id, setIsDoneRecipe);
+  }, [id, urlAndType]);
 
-  const getDataApiDrinkAndMeal = async () => {
-    const responseDrinks = await fetch(urlApiDrinks);
-    const dataDrinks = await responseDrinks.json();
-    setDataApiDrinks(dataDrinks.drinks);
-    const responseMeals = await fetch(urlApiMeals);
-    const dataMeals = await responseMeals.json();
-    setDataApiMeals(dataMeals.meals);
-  };
+  // const getDataApiDrinkAndMeal = async () => {
+  //   const responseDrinks = await fetch(urlApiDrinks);
+  //   const dataDrinks = await responseDrinks.json();
+  //   setDataApiDrinks(dataDrinks.drinks);
+  //   const responseMeals = await fetch(urlApiMeals);
+  //   const dataMeals = await responseMeals.json();
+  //   setDataApiMeals(dataMeals.meals);
+  // };
 
   // useEffect para fazer o fetch para alimentar o estado recipeData.
   useEffect(() => {
@@ -101,8 +70,9 @@ function RecipeDetails() {
       setRecipeData(data[urlAndType.type][0]);
     };
     fetchApi();
-    getDataApiDrinkAndMeal();
+    // getDataApiDrinkAndMeal();
   }, [urlAndType]);
+
   // useEffect usado para pegar os ingredientes válidos da receita.
   useEffect(() => {
     const getIngredients = () => {
@@ -147,43 +117,15 @@ function RecipeDetails() {
     }
   }, [recipeData.strYoutube]);
 
-  // useEffect para remover o elemento criado com a msg de link copiado
-
-  useEffect(() => {
-    if (copied) {
-      const time = 3000;
-      const copyTimeOut = setTimeout(() => {
-        setCopied(false);
-      }, time);
-      return () => {
-        clearTimeout(copyTimeOut);
-      };
-    }
-  }, [copied]);
-
   // Função do botão Start Recipe
   const startRecFunc = () => {
     const { type } = urlAndType;
-    if (localStorage.getItem('inProgressRecipes')) {
-      const inProgressRecipes = JSON.parse(
-        localStorage.getItem('inProgressRecipes'),
-      );
-      if (!inProgressRecipes[type][id]) {
-        const newProgress = {
-          ...inProgressRecipes,
-          [type]: {
-            ...inProgressRecipes[type],
-            [id]: strIngredient,
-          },
-        };
-        localStorage.setItem('inProgressRecipes', JSON.stringify(newProgress));
-      }
-    }
-    history.push(`/${urlAndType.type}/${id}/in-progress`);
+    addToInProgressRecipes(id, type, strIngredient);
+    history.push(`/${type}/${id}/in-progress`);
   };
 
   // Função para adicionar a receita no local storage
-  const saveFavRecipe = () => {
+  const toggleFav = () => {
     const recipe = {
       id: recipeData.idMeal || recipeData.idDrink,
       type: urlAndType.type === MEALS ? 'meal' : 'drink',
@@ -193,94 +135,33 @@ function RecipeDetails() {
       name: recipeData.strMeal || recipeData.strDrink,
       image: recipeData.strMealThumb || recipeData.strDrinkThumb,
     };
-    if (localStorage.getItem('favoriteRecipes')) {
-      const favoriteRecipes = JSON.parse(
-        localStorage.getItem('favoriteRecipes'),
-      );
-
-      if (favoriteRecipes.length === 0) {
-        localStorage.setItem('favoriteRecipes', JSON.stringify([recipe]));
-      } else if (!favoriteRecipes.some((el) => el.name === recipe.name)) {
-        localStorage.setItem(
-          'favoriteRecipes',
-          JSON.stringify([...favoriteRecipes, recipe]),
-        );
-      }
+    if (isFavorite) {
+      removeFromFavoriteRecipes(id);
+      setIsFavorite(false);
+    } else {
+      addToFavoriteRecipes(id, recipe);
+      setIsFavorite(true);
     }
   };
-
-  const ingredientElements = strIngredient.map((item, index) => {
-    const { ingredient, measure } = item;
-
-    return (
-      <li data-testid={ `${index}-ingredient-name-and-measure` } key={ ingredient }>
-        {`${ingredient} - ${measure}`}
-      </li>
-    );
-  });
 
   const type = urlAndType.type === MEALS ? 'Meal' : 'Drink';
   return (
     <div>
-      <h1 data-testid="recipe-title">{recipeData[`str${type}`]}</h1>
-
-      <img
-        src={ recipeData[`str${type}Thumb`] }
-        alt={ `Recipe ${recipeData[`str${type}`]}` }
-        data-testid="recipe-photo"
+      <DetailsCard
+        recipeData={ recipeData }
+        type={ type }
+        video={ video }
+        strIngredient={ strIngredient }
+        urlAndType={ urlAndType }
       />
 
-      {urlAndType.type === MEALS ? (
-        <p data-testid="recipe-category">{recipeData.strCategory}</p>
-      ) : (
-        <p data-testid="recipe-category">{recipeData.strAlcoholic}</p>
-      )}
-
-      <h2>Ingredientes</h2>
-      <ul>{ingredientElements}</ul>
-
-      <h2>Intructions</h2>
-      <p data-testid="instructions">{recipeData.strInstructions}</p>
-
-      <h2>Video</h2>
-      <iframe
-        data-testid="video"
-        width="560"
-        height="315"
-        src={ `https://www.youtube.com/embed/${video}` }
-        title="YouTube video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media"
-        allowFullScreen
+      <DetailsButtons
+        isDoneRecipe={ isDoneRecipe }
+        isInProgress={ isInProgress }
+        isFavorite={ isFavorite }
+        startRecFunc={ startRecFunc }
+        toggleFav={ toggleFav }
       />
-
-      {!VerifyDoneRecipes() && (
-        <button
-          data-testid="start-recipe-btn"
-          className="FixedBottom"
-          onClick={ startRecFunc }
-        >
-          {VerifyInProgressRecipes() ? 'Continue Recipe' : 'Start Recipe'}
-        </button>
-      )}
-
-      <div className="FixedBottomLeft">
-        {copied && <p>Link copied!</p>}
-        <button
-          data-testid="share-btn"
-          onClick={ () => {
-            copy(document.location.href);
-            setCopied(true);
-          } }
-        >
-          Compartilhar
-        </button>
-        <button
-          onClick={ saveFavRecipe }
-        >
-          Favoritar
-          <img src={ favRecipe.some((el) => el.id === id) ? blackHeart : whiteHeart } alt="coração" data-testid="favorite-btn" />
-        </button>
-      </div>
     </div>
   );
 }
