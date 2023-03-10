@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-// import copy from 'clipboard-copy';
+import { useParams, useLocation, useHistory } from 'react-router-dom';
+import copy from 'clipboard-copy';
 import { fetchByIds } from '../services/fetchs';
 import getTitleAndButton from '../helpers/getTitleAndButton';
-// import whiteHeart from '../images/whiteHeartIcon.svg';
-// import blackHeart from '../images/blackHeartIcon.svg';
+import { addToDoneRecipes } from '../services/doneRecipesLS';
+import { recipeIsInFavoriteRecipes,
+  addToFavoriteRecipes, removeFromFavoriteRecipes } from '../services/favoriteRecipesLS';
+import whiteHeart from '../images/whiteHeartIcon.svg';
+import blackHeart from '../images/blackHeartIcon.svg';
 
 export default function RecipesInProgress() {
+  const [isFavorite, setIsFavorite] = useState(false);
   const { pathname } = useLocation();
   const { id } = useParams();
   const [pageInfo, setPageInfo] = useState({
@@ -15,10 +19,24 @@ export default function RecipesInProgress() {
   });
   const [recipeData, setRecipeData] = useState({});
   const [instructions, setInstructions] = useState([]);
-
+  const [disabled, setDisabled] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const history = useHistory();
   useEffect(() => {
     setPageInfo(getTitleAndButton(pathname));
   }, [pathname]);
+
+  useEffect(() => {
+    if (copied) {
+      const time = 1500;
+      const copyTimeOut = setTimeout(() => {
+        setCopied(false);
+      }, time);
+      return () => {
+        clearTimeout(copyTimeOut);
+      };
+    }
+  }, [copied]);
 
   useEffect(() => {
     fetchByIds(pageInfo.title, id, setRecipeData);
@@ -33,13 +51,40 @@ export default function RecipesInProgress() {
         checked: false,
       }));
       setInstructions(objectData);
+      const verifyCheck = objectData.some((el) => el.checked === false);
+      setDisabled(verifyCheck);
     }
   }, [recipeData]);
+
+  useEffect(() => {
+    const verifyCheck = instructions.some((el) => el.checked === false);
+    setDisabled(verifyCheck);
+    recipeIsInFavoriteRecipes(id, setIsFavorite);
+  }, [instructions, id]);
 
   const handleChange = (index) => {
     const newInstructions = [...instructions];
     newInstructions[index].checked = !newInstructions[index].checked;
     setInstructions(newInstructions);
+  };
+
+  const toggleFav = () => {
+    const recipe = {
+      id: recipeData.idMeal || recipeData.idDrink,
+      type: pageInfo.title === 'Meals' ? 'meal' : 'drink',
+      nationality: recipeData.strArea || '',
+      category: recipeData.strCategory || '',
+      alcoholicOrNot: recipeData.strAlcoholic || '',
+      name: recipeData.strMeal || recipeData.strDrink,
+      image: recipeData.strMealThumb || recipeData.strDrinkThumb,
+    };
+    if (isFavorite) {
+      removeFromFavoriteRecipes(id);
+      setIsFavorite(false);
+    } else {
+      addToFavoriteRecipes(id, recipe);
+      setIsFavorite(true);
+    }
   };
 
   return (
@@ -50,10 +95,11 @@ export default function RecipesInProgress() {
         alt="Foto da receita"
       />
       <h1 data-testid="recipe-title">{ recipeData.strDrink || recipeData.strMeal }</h1>
-      {/* <div className="FixedBottomLeft">
+      <div className="FixedBottomLeft">
         {copied && <p>Link copied!</p>}
         <button
           data-testid="share-btn"
+          type="button"
           onClick={ () => {
             copy(document.location.href);
             setCopied(true);
@@ -69,7 +115,7 @@ export default function RecipesInProgress() {
             data-testid="favorite-btn"
           />
         </button>
-      </div> */}
+      </div>
       <h2 data-testid="recipe-category">{ recipeData.strCategory }</h2>
       <h3 data-testid="instructions">Instruções</h3>
       { instructions.map((el, index) => (
@@ -79,13 +125,21 @@ export default function RecipesInProgress() {
             data-testid={ `${index}-ingredient-step` }
             onChange={ () => handleChange(index) }
           />
-          { el.name }
+          <span
+            className={ el.checked && 'CheckBoxColor' }
+          >
+            { el.name }
+          </span>
         </label>
       ))}
       <button
         data-testid="finish-recipe-btn"
         type="button"
-        disabled="true"
+        onClick={ () => {
+          addToDoneRecipes(id, recipeData);
+          history.push('/done-recipes');
+        } }
+        disabled={ disabled }
         style={ {
           position: 'fixed',
           bottom: '0px',
