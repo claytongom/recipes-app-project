@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useParams, useHistory } from 'react-router-dom';
 import {
   addToFavoriteRecipes,
@@ -12,21 +12,22 @@ import {
 import { recipeIsInDoneRecipes } from '../services/doneRecipesLS';
 import DetailsCard from '../components/DetailsCard';
 import DetailsButtons from '../components/DetailsButtons';
+import RecipesContext from '../context/RecipesContext';
 
 const MEALS = 'meals';
 const DRINKS = 'drinks';
-// const urlApiDrinks = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
-// const urlApiMeals = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
 
 function RecipeDetails() {
+  // Dados e funções recuperados usando hooks.
+  const { setRecipes } = useContext(RecipesContext);
   const { id } = useParams();
   const { pathname } = useLocation();
   const history = useHistory();
+
+  // Estados criados com useState.
   const [recipeData, setRecipeData] = useState({});
   const [strIngredient, setStrIngredient] = useState([]);
   const [video, setVideo] = useState('');
-  // const [dataApiDrinks, setDataApiDrinks] = useState([]);
-  // const [dataApiMeals, setDataApiMeals] = useState([]);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isInProgress, setIsInProgress] = useState(false);
   const [isDoneRecipe, setIsDoneRecipe] = useState(false);
@@ -53,15 +54,6 @@ function RecipeDetails() {
     recipeIsInDoneRecipes(id, setIsDoneRecipe);
   }, [id, urlAndType]);
 
-  // const getDataApiDrinkAndMeal = async () => {
-  //   const responseDrinks = await fetch(urlApiDrinks);
-  //   const dataDrinks = await responseDrinks.json();
-  //   setDataApiDrinks(dataDrinks.drinks);
-  //   const responseMeals = await fetch(urlApiMeals);
-  //   const dataMeals = await responseMeals.json();
-  //   setDataApiMeals(dataMeals.meals);
-  // };
-
   // useEffect para fazer o fetch para alimentar o estado recipeData.
   useEffect(() => {
     const fetchApi = async () => {
@@ -69,9 +61,27 @@ function RecipeDetails() {
       const data = await response.json();
       setRecipeData(data[urlAndType.type][0]);
     };
+
+    const fetchToRecommendations = async () => {
+      const { type } = urlAndType;
+      const urlApiDrinks = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
+      const urlApiMeals = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
+
+      if (type === MEALS) {
+        const response = await fetch(urlApiDrinks);
+        const data = await response.json();
+        setRecipes(data.drinks);
+      }
+      if (type === DRINKS) {
+        const response = await fetch(urlApiMeals);
+        const data = await response.json();
+        setRecipes(data.meals);
+      }
+    };
+
     fetchApi();
-    // getDataApiDrinkAndMeal();
-  }, [urlAndType]);
+    fetchToRecommendations();
+  }, [urlAndType, setRecipes]);
 
   // useEffect usado para pegar os ingredientes válidos da receita.
   useEffect(() => {

@@ -6,6 +6,7 @@ import { verifyLocalInProgressRecipe } from '../services/inProgressRecipesLS';
 import RecipesContext from './RecipesContext';
 
 function RecipesProvider({ children }) {
+  const [recipes, setRecipes] = useState([]);
   const [meals, setMeals] = useState([]);
   const [drinks, setDrinks] = useState([]);
   const [categorysMeals, setCategorysMeals] = useState([]);
@@ -52,14 +53,16 @@ function RecipesProvider({ children }) {
 
   const values = useMemo(
     () => ({
+      recipes,
       meals,
       drinks,
       categorysMeals,
       categorysDrinks,
       setMeals,
       setDrinks,
+      setRecipes,
     }),
-    [meals, drinks, categorysMeals, categorysDrinks],
+    [recipes, meals, drinks, categorysMeals, categorysDrinks],
   );
 
   return (
