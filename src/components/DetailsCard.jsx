@@ -6,7 +6,7 @@ function DetailsCard({ recipeData, type, video, strIngredient, urlAndType }) {
     const { ingredient, measure } = item;
 
     return (
-      <li data-testid={ `${index}-ingredient-name-and-measure` } key={ ingredient }>
+      <li data-testid={ `${index}-ingredient-name-and-measure` } key={ index }>
         {`${ingredient} - ${measure}`}
       </li>
     );

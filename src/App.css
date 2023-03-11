@@ -1,9 +1,3 @@
-.card {
-  border: 1px solid red;
-  display: flex;
-  width: 180px;
-}
-
 .FixedBottom {
   bottom: 0;
   position: fixed;
@@ -16,5 +10,30 @@
 }
 
 .CheckBoxColor {
-  text-decoration: line-through solid rgb(0, 0, 0);
+  text-decoration: line-through solid black;
+}
+
+.RecipeDetails {
+  margin-bottom: 70px;
+}
+
+.carouselContainer {
+  border: 3px solid darkgreen;
+  height: 173px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+  width: 406px;
+}
+
+.carouselCard {
+  border: 1px solid black;
+  display: inline-block;
+  height: 150px;
+  margin-right: 5px;
+  width: 200px;
+}
+
+.carouselImage {
+  width: 100px;
 }
