@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import shareIcon from '../images/shareIcon.svg';
 import blackHeartIcon from '../images/blackHeartIcon.svg';
 import Gift from '../components/Gift';
 import Header from '../components/Header';
+import getTitleAndButton from '../helpers/getTitleAndButton';
 
 function FavoriteRecipes() {
+  const { pathname } = useLocation();
+  const [pageInfo] = useState(getTitleAndButton(pathname));
   const [favorites, setFavorites] = useState([]);
   const [filteredFavorites, setFilteredFavorites] = useState([]);
   const [filterMeal, setFilterMeal] = useState(false);
@@ -116,14 +119,7 @@ function FavoriteRecipes() {
   // elementos da tela de receitas favoritas passando os (data-testids)
   return (
     <>
-      <Header
-        headerTypes={ {
-          title: 'Favorite Recipes',
-          searchButton: false,
-          profileIcone: true,
-          type: 'Meals',
-        } }
-      />
+      <Header title={ pageInfo.title } searchButton={ pageInfo.haveButton } />
       <div>
         <button
           onClick={ () => handleFilter('meal') }

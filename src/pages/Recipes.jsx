@@ -39,8 +39,9 @@ function Recipes() {
       const path = pageInfo.title.toLowerCase();
       const id = recipes[0].idMeal || recipes[0].idDrink;
       history.push(`/${path}/${id}`);
+      fetchData(pageInfo.title, setRecipes);
     }
-  }, [history, pageInfo, recipes, makeSearch]);
+  }, [history, pageInfo, recipes, makeSearch, setRecipes]);
 
   // Função para remover todos os filtros.
   const removeFilter = () => {
@@ -52,15 +53,8 @@ function Recipes() {
     <>
       <main>
         {/* Renderização do header */}
-        {pageInfo && (
-          <Header
-            headerTypes={ {
-              title: pageInfo.title,
-              searchButton: pageInfo.haveButton,
-              profileIcone: true,
-              type: pageInfo.title,
-            } }
-          />
+        {pageInfo.title && (
+          <Header title={ pageInfo.title } searchButton={ pageInfo.haveButton } />
         )}
 
         {/* Renderização do botão All */}

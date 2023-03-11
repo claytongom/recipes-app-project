@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import getTitleAndButton from '../helpers/getTitleAndButton';
 
 function Profile() {
   // Vou alimentar o estado email com o que tem no localStorage segundo o requisito.
-  const [email, setEmail] = useState('');
   const history = useHistory();
+  const { pathname } = useLocation();
+  const [email, setEmail] = useState('');
+  const [pageInfo] = useState(getTitleAndButton(pathname));
 
   // Só pra colocar algo no local storage
   // localStorage.setItem("user", JSON.stringify({ email: "email@email.com" }));
@@ -27,14 +30,7 @@ function Profile() {
 
   return (
     <div>
-      <Header
-        headerTypes={ {
-          title: 'Profile',
-          searchButton: false,
-          profileIcone: true,
-          drink: false,
-        } }
-      />
+      <Header title={ pageInfo.title } searchButton={ pageInfo.haveButton } />
       <p data-testid="profile-email">{email}</p>
       <button
         type="button"

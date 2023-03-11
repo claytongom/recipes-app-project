@@ -8,19 +8,17 @@ import SearchBar from './SearchBar';
 export default function Header(props) {
   const [barVisibleLogic, setBarVisibleLogic] = useState(false);
 
-  const {
-    headerTypes: { title, searchButton, profileIcone, type },
-  } = props;
+  const { title, searchButton } = props;
 
   return (
     <div>
       <h1 data-testid="page-title">{title}</h1>
-      {profileIcone && (
-        <Link to="/profile">
-          <img data-testid="profile-top-btn" src={ profileIcon } alt="profile" />
-        </Link>
-      )}
-      {barVisibleLogic && <SearchBar type={ type } />}
+
+      <Link to="/profile">
+        <img data-testid="profile-top-btn" src={ profileIcon } alt="profile" />
+      </Link>
+
+      {barVisibleLogic && <SearchBar type={ title } />}
       {searchButton && (
         <button
           type="button"
@@ -34,10 +32,6 @@ export default function Header(props) {
 }
 
 Header.propTypes = {
-  headerTypes: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    searchButton: PropTypes.bool.isRequired,
-    profileIcone: PropTypes.bool.isRequired,
-    type: PropTypes.string.isRequired,
-  }).isRequired,
+  searchButton: PropTypes.bool.isRequired,
+  title: PropTypes.string.isRequired,
 };
