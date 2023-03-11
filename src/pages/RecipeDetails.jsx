@@ -13,6 +13,8 @@ import { recipeIsInDoneRecipes } from '../services/doneRecipesLS';
 import DetailsCard from '../components/DetailsCard';
 import DetailsButtons from '../components/DetailsButtons';
 import RecipesContext from '../context/RecipesContext';
+import NewCarousel from '../components/NewCarousel';
+import getTitleAndButton from '../helpers/getTitleAndButton';
 
 const MEALS = 'meals';
 const DRINKS = 'drinks';
@@ -31,6 +33,10 @@ function RecipeDetails() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isInProgress, setIsInProgress] = useState(false);
   const [isDoneRecipe, setIsDoneRecipe] = useState(false);
+  const [pageInfo, setPageInfo] = useState({
+    title: '',
+    haveButton: false,
+  });
 
   // Função para definir a url para o fetch e verificar se é meal ou drink.
   const getUrl = () => {
@@ -52,7 +58,8 @@ function RecipeDetails() {
     recipeIsInFavoriteRecipes(id, setIsFavorite);
     recipeIsInProgressRecipes(id, urlAndType.type, setIsInProgress);
     recipeIsInDoneRecipes(id, setIsDoneRecipe);
-  }, [id, urlAndType]);
+    setPageInfo(getTitleAndButton(pathname));
+  }, [id, urlAndType, pathname]);
 
   // useEffect para fazer o fetch para alimentar o estado recipeData.
   useEffect(() => {
@@ -160,7 +167,7 @@ function RecipeDetails() {
 
   const type = urlAndType.type === MEALS ? 'Meal' : 'Drink';
   return (
-    <div>
+    <div className="RecipeDetails">
       <DetailsCard
         recipeData={ recipeData }
         type={ type }
@@ -168,6 +175,8 @@ function RecipeDetails() {
         strIngredient={ strIngredient }
         urlAndType={ urlAndType }
       />
+
+      <NewCarousel type={ pageInfo.title } />
 
       <DetailsButtons
         isDoneRecipe={ isDoneRecipe }
