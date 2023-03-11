@@ -176,6 +176,7 @@ function RecipeDetails() {
         urlAndType={ urlAndType }
       />
 
+      <h2>Recommendations</h2>
       <NewCarousel type={ pageInfo.title } />
 
       <DetailsButtons
