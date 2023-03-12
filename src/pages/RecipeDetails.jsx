@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import NewCarousel from '../components/NewCarousel';
-import NewDetailsCard from '../components/NewDetailsCard';
+import DetailsCard from '../components/DetailsCard';
+import Carousel from '../components/Carousel';
 import StartButton from '../components/StartButton';
 import getTitleAndButton from '../helpers/getTitleAndButton';
 import { fetchByIds } from '../services/fetchs';
@@ -56,14 +56,14 @@ function NewRecipeDetails() {
   return (
     <div>
       {Object.keys(recipe).length > 0 && (
-        <NewDetailsCard
+        <DetailsCard
           recipe={ recipe }
           ingredients={ ingredients }
           id={ id }
           type={ pageInfo.title }
         />
       )}
-      <NewCarousel type={ pageInfo.title } />
+      <Carousel type={ pageInfo.title } />
 
       <StartButton
         id={ id }

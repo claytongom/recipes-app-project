@@ -5,7 +5,7 @@ import { fetchData } from '../services/fetchs';
 
 const MAX_RECIPES = 6;
 
-function NewCarousel({ type }) {
+function Carousel({ type }) {
   const { setRecipes, recipes } = useContext(RecipesContext);
 
   useEffect(() => {
@@ -40,8 +40,8 @@ function NewCarousel({ type }) {
   );
 }
 
-NewCarousel.propTypes = {
+Carousel.propTypes = {
   type: PropTypes.string.isRequired,
 };
 
-export default NewCarousel;
+export default Carousel;
