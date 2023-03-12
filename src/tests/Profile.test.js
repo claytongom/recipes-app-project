@@ -3,10 +3,24 @@ import userEvent from '@testing-library/user-event';
 import { act } from 'react-dom/test-utils';
 import Profile from '../pages/Profile';
 import renderWithRouterAndContextProvider from './helpers/renderWithRouterAndContextProvider';
+import getTitleAndButton from '../helpers/getTitleAndButton';
+
+jest.mock('../helpers/getTitleAndButton');
 
 describe('Testanto a página "Profile"', () => {
   afterEach(() => {
     localStorage.clear();
+  });
+
+  beforeEach(() => {
+    getTitleAndButton.mockReturnValue({
+      title: 'Meals',
+      haveButton: false,
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   test('Verifica se possui um elemento para e-mail.', () => {

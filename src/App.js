@@ -10,7 +10,6 @@ import SearchBar from './components/SearchBar';
 import FavoriteRecipes from './pages/FavoriteRecipes';
 import RecipeDetails from './pages/RecipeDetails';
 import RecipeInProgress from './pages/RecipeInProgress';
-
 import Recipes from './pages/Recipes';
 
 function App() {

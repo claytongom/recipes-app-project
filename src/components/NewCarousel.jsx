@@ -11,7 +11,7 @@ function NewCarousel({ type }) {
   useEffect(() => {
     const reversetype = type === 'Meals' ? 'Drinks' : 'Meals';
     fetchData(reversetype, setRecipes);
-  });
+  }, [setRecipes, type]);
 
   const renderMeals = recipes
     .map((recipe, index) => (
@@ -32,7 +32,12 @@ function NewCarousel({ type }) {
     ))
     .slice(0, MAX_RECIPES);
 
-  return <div className="carouselContainer">{renderMeals}</div>;
+  return (
+    <div>
+      <h2>Recommedations</h2>
+      <div className="carouselContainer">{renderMeals}</div>
+    </div>
+  );
 }
 
 NewCarousel.propTypes = {
