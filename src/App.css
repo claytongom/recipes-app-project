@@ -18,7 +18,7 @@
 }
 
 .carouselContainer {
-  border: 3px solid darkgreen;
+  border: 3px solid black;
   height: 173px;
   overflow-x: scroll;
   overflow-y: hidden;

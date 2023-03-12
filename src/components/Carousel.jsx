@@ -1,56 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect } from 'react';
+import RecipesContext from '../context/RecipesContext';
+import { fetchData } from '../services/fetchs';
 
-function Carousel({ dataApiDrinks, dataApiMeals, type }) {
-  const [recApiDrinks, setRecApiDrinks] = useState([]);
-  const [recApiMeals, setRecApiMeals] = useState([]);
+const MAX_RECIPES = 6;
+
+function Carousel({ type }) {
+  const { setRecipes, recipes } = useContext(RecipesContext);
 
   useEffect(() => {
-    if (dataApiDrinks && dataApiMeals) {
-      const seis = 6;
-      setRecApiDrinks(dataApiDrinks.slice(0, seis));
-      setRecApiMeals(dataApiMeals.slice(0, seis));
-    }
-  }, [dataApiDrinks, dataApiMeals]);
+    const reversetype = type === 'Meals' ? 'Drinks' : 'Meals';
+    fetchData(reversetype, setRecipes);
+  }, [setRecipes, type]);
 
-  const renderDrinks = recApiDrinks.map((rec, index) => (
-    <div
-      data-testid={ `${index}-recommendation-card` }
-      key={ rec.idDrink }
-      className="card"
-    >
-      <p data-testid={ `${index}-recommendation-title` }>
-        {rec.strDrink}
-      </p>
-    </div>));
+  const renderMeals = recipes
+    .map((recipe, index) => (
+      <div
+        key={ index }
+        className="carouselCard"
+        data-testid={ `${index}-recommendation-card` }
+      >
+        <p data-testid={ `${index}-recommendation-title` }>
+          {recipe.strDrink || recipe.strMeal}
+        </p>
+        <img
+          src={ recipe.strDrinkThumb || recipe.strMealThumb }
+          alt={ recipe.strDrink || recipe.strMeal }
+          className="carouselImage"
+        />
+      </div>
+    ))
+    .slice(0, MAX_RECIPES);
 
-  const renderMeals = recApiMeals.map((rec, index) => (
-    <div
-      className="card"
-      data-testid={ `${index}-recommendation-card` }
-      key={ rec.idMeal }
-    >
-      <p data-testid={ `${index}-recommendation-title` }>
-        {rec.strMeal}
-      </p>
-    </div>));
   return (
-    <car
-      id="Carousel"
-    >
-      {type === 'meals' ? renderDrinks : renderMeals}
-    </car>
+    <div>
+      <h2>Recommedations</h2>
+      <div className="carouselContainer">{renderMeals}</div>
+    </div>
   );
 }
 
 Carousel.propTypes = {
-  dataApiDrinks: propTypes.arrayOf(
-    propTypes.shape({}),
-  ).isRequired,
-  dataApiMeals: propTypes.arrayOf(
-    propTypes.shape({}),
-  ).isRequired,
-  type: propTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 export default Carousel;

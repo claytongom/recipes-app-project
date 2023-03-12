@@ -1,8 +1,19 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import BtnsFavAndShare from './BtnsFavAndShare';
 
-function DetailsCard({ recipeData, type, video, strIngredient, urlAndType }) {
-  const ingredientElements = strIngredient.map((item, index) => {
+function DetailsCard({ id, recipe, ingredients, type }) {
+  const [video, setVideo] = useState('');
+
+  useEffect(() => {
+    if (recipe.strYoutube) {
+      const cut = 32;
+      const videoId = recipe.strYoutube.slice(cut);
+      setVideo(videoId);
+    }
+  }, [recipe]);
+
+  const renderIngredients = ingredients.map((item, index) => {
     const { ingredient, measure } = item;
 
     return (
@@ -14,57 +25,64 @@ function DetailsCard({ recipeData, type, video, strIngredient, urlAndType }) {
 
   return (
     <div>
-      <h1 data-testid="recipe-title">{recipeData[`str${type}`]}</h1>
+      <h1 data-testid="recipe-title">{recipe.strMeal || recipe.strDrink}</h1>
 
       <img
-        src={ recipeData[`str${type}Thumb`] }
-        alt={ `Recipe ${recipeData[`str${type}`]}` }
+        src={ recipe.strMealThumb || recipe.strDrinkThumb }
+        alt={ recipe.strMealThumb || recipe.strDrinkThumb }
         data-testid="recipe-photo"
       />
 
-      {urlAndType.type === 'meals' ? (
-        <p data-testid="recipe-category">{recipeData.strCategory}</p>
-      ) : (
-        <p data-testid="recipe-category">{recipeData.strAlcoholic}</p>
-      )}
+      <BtnsFavAndShare id={ id } recipe={ recipe } type={ type } />
 
-      <h2>Ingredientes</h2>
-      <ul>{ingredientElements}</ul>
+      <h2>Category</h2>
+      <p data-testid="recipe-category">
+        {type === 'Meals' ? recipe.strCategory : recipe.strAlcoholic}
+      </p>
+
+      <h2>Ingredients</h2>
+      <ul>{renderIngredients}</ul>
 
       <h2>Intructions</h2>
-      <p data-testid="instructions">{recipeData.strInstructions}</p>
+      <p data-testid="instructions">{recipe.strInstructions}</p>
 
-      <h2>Video</h2>
-      <iframe
-        data-testid="video"
-        width="560"
-        height="315"
-        src={ `https://www.youtube.com/embed/${video}` }
-        title="YouTube video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media"
-        allowFullScreen
-      />
+      {recipe.strYoutube && (
+        <>
+          <h2>Video</h2>
+          <iframe
+            data-testid="video"
+            width="560"
+            height="315"
+            src={ `https://www.youtube.com/embed/${video}` }
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media"
+            allowFullScreen
+          />
+        </>
+      )}
     </div>
   );
 }
 
 DetailsCard.propTypes = {
-  recipeData: PropTypes.shape({
-    strAlcoholic: PropTypes.string.isRequired,
-    strCategory: PropTypes.string.isRequired,
-    strInstructions: PropTypes.string.isRequired,
-  }).isRequired,
-  strIngredient: PropTypes.arrayOf(
+  id: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  ingredients: PropTypes.arrayOf(
     PropTypes.shape({
-      ingredient: PropTypes.string.isRequired,
-      measure: PropTypes.string.isRequired,
+      ingredient: PropTypes.string,
+      measure: PropTypes.string,
     }),
   ).isRequired,
-  type: PropTypes.string.isRequired,
-  urlAndType: PropTypes.shape({
-    type: PropTypes.string.isRequired,
+  recipe: PropTypes.shape({
+    strAlcoholic: PropTypes.string,
+    strCategory: PropTypes.string,
+    strDrink: PropTypes.string,
+    strDrinkThumb: PropTypes.string,
+    strInstructions: PropTypes.string,
+    strMeal: PropTypes.string,
+    strMealThumb: PropTypes.string,
+    strYoutube: PropTypes.string,
   }).isRequired,
-  video: PropTypes.string.isRequired,
 };
 
 export default DetailsCard;

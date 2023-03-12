@@ -1,99 +1,27 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useLocation, useParams, useHistory } from 'react-router-dom';
-import {
-  addToFavoriteRecipes,
-  recipeIsInFavoriteRecipes,
-  removeFromFavoriteRecipes,
-} from '../services/favoriteRecipesLS';
-import {
-  addToInProgressRecipes,
-  recipeIsInProgressRecipes,
-} from '../services/inProgressRecipesLS';
-import { recipeIsInDoneRecipes } from '../services/doneRecipesLS';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import DetailsCard from '../components/DetailsCard';
-import DetailsButtons from '../components/DetailsButtons';
-import RecipesContext from '../context/RecipesContext';
-import NewCarousel from '../components/NewCarousel';
+import Carousel from '../components/Carousel';
+import StartButton from '../components/StartButton';
 import getTitleAndButton from '../helpers/getTitleAndButton';
+import { fetchByIds } from '../services/fetchs';
 
-const MEALS = 'meals';
-const DRINKS = 'drinks';
-
-function RecipeDetails() {
-  // Dados e funções recuperados usando hooks.
-  const { setRecipes } = useContext(RecipesContext);
+function NewRecipeDetails() {
   const { id } = useParams();
   const { pathname } = useLocation();
-  const history = useHistory();
+  const [recipe, setRecipe] = useState({});
+  const [ingredients, setIngredients] = useState([]);
+  const [pageInfo] = useState(getTitleAndButton(pathname));
 
-  // Estados criados com useState.
-  const [recipeData, setRecipeData] = useState({});
-  const [strIngredient, setStrIngredient] = useState([]);
-  const [video, setVideo] = useState('');
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [isInProgress, setIsInProgress] = useState(false);
-  const [isDoneRecipe, setIsDoneRecipe] = useState(false);
-  const [pageInfo, setPageInfo] = useState({
-    title: '',
-    haveButton: false,
-  });
-
-  // Função para definir a url para o fetch e verificar se é meal ou drink.
-  const getUrl = () => {
-    if (pathname.includes(MEALS)) {
-      return {
-        type: MEALS,
-        url: `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`,
-      };
-    }
-    return {
-      type: DRINKS,
-      url: `https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`,
-    };
-  };
-  const [urlAndType] = useState(getUrl());
-  // ------------------------------------------------------------------------- //
-
+  // useEffect pra pegar os dados da receita pelo seu id.
   useEffect(() => {
-    recipeIsInFavoriteRecipes(id, setIsFavorite);
-    recipeIsInProgressRecipes(id, urlAndType.type, setIsInProgress);
-    recipeIsInDoneRecipes(id, setIsDoneRecipe);
-    setPageInfo(getTitleAndButton(pathname));
-  }, [id, urlAndType, pathname]);
-
-  // useEffect para fazer o fetch para alimentar o estado recipeData.
-  useEffect(() => {
-    const fetchApi = async () => {
-      const response = await fetch(urlAndType.url);
-      const data = await response.json();
-      setRecipeData(data[urlAndType.type][0]);
-    };
-
-    const fetchToRecommendations = async () => {
-      const { type } = urlAndType;
-      const urlApiDrinks = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
-      const urlApiMeals = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
-
-      if (type === MEALS) {
-        const response = await fetch(urlApiDrinks);
-        const data = await response.json();
-        setRecipes(data.drinks);
-      }
-      if (type === DRINKS) {
-        const response = await fetch(urlApiMeals);
-        const data = await response.json();
-        setRecipes(data.meals);
-      }
-    };
-
-    fetchApi();
-    fetchToRecommendations();
-  }, [urlAndType, setRecipes]);
+    fetchByIds(pageInfo.title, id, setRecipe);
+  }, [id, pageInfo]);
 
   // useEffect usado para pegar os ingredientes válidos da receita.
   useEffect(() => {
     const getIngredients = () => {
-      const ingredientData = Object.entries(recipeData).filter((item) => {
+      const ingredientData = Object.entries(recipe).filter((item) => {
         const str = item[0].includes('strIngredient') || item[0].includes('strMeasure');
         const isNotNull = item[1];
         const isNotEmpty = isNotNull
@@ -122,70 +50,29 @@ function RecipeDetails() {
         measure: measurePart[index],
       }));
     };
-    setStrIngredient(getIngredients());
-  }, [recipeData]);
+    setIngredients(getIngredients());
+  }, [recipe]);
 
-  // useEffect para pegar o id da url do vídeo do youtube.
-  useEffect(() => {
-    if (recipeData.strYoutube) {
-      const cut = 32;
-      const videoId = recipeData.strYoutube.slice(cut);
-      setVideo(videoId);
-    }
-  }, [recipeData.strYoutube]);
-
-  // Função do botão Start Recipe
-  const startRecFunc = () => {
-    const { type } = urlAndType;
-    const objectData = strIngredient.map((ingredient) => ({
-      ...ingredient,
-      checked: false,
-    }));
-    addToInProgressRecipes(id, type, objectData);
-    history.push(`/${type}/${id}/in-progress`);
-  };
-
-  // Função para adicionar a receita no local storage
-  const toggleFav = () => {
-    const recipe = {
-      id: recipeData.idMeal || recipeData.idDrink,
-      type: urlAndType.type === MEALS ? 'meal' : 'drink',
-      nationality: recipeData.strArea || '',
-      category: recipeData.strCategory || '',
-      alcoholicOrNot: recipeData.strAlcoholic || '',
-      name: recipeData.strMeal || recipeData.strDrink,
-      image: recipeData.strMealThumb || recipeData.strDrinkThumb,
-    };
-    if (isFavorite) {
-      removeFromFavoriteRecipes(id);
-      setIsFavorite(false);
-    } else {
-      addToFavoriteRecipes(id, recipe);
-      setIsFavorite(true);
-    }
-  };
-
-  const type = urlAndType.type === MEALS ? 'Meal' : 'Drink';
   return (
-    <div className="RecipeDetails">
-      <DetailsCard
-        recipeData={ recipeData }
-        type={ type }
-        video={ video }
-        strIngredient={ strIngredient }
-        urlAndType={ urlAndType }
-      />
+    <div>
+      {Object.keys(recipe).length > 0 && (
+        <DetailsCard
+          recipe={ recipe }
+          ingredients={ ingredients }
+          id={ id }
+          type={ pageInfo.title }
+        />
+      )}
+      <Carousel type={ pageInfo.title } />
 
-      <NewCarousel type={ pageInfo.title } />
-
-      <DetailsButtons
-        isDoneRecipe={ isDoneRecipe }
-        isInProgress={ isInProgress }
-        isFavorite={ isFavorite }
-        startRecFunc={ startRecFunc }
-        toggleFav={ toggleFav }
+      <StartButton
+        id={ id }
+        type={ pageInfo.title }
+        ingredients={ ingredients }
+        history={ useHistory() }
       />
     </div>
   );
 }
-export default RecipeDetails;
+
+export default NewRecipeDetails;
