@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import shareIcon from '../images/shareIcon.svg';
 
-function Recipes() {
+function DoneRecipes() {
   const [doneRecipesItens, setDoneRecipesItens] = useState([]);
   const [linkCopied, setLinkCopied] = useState(false);
   const [filter, setFilter] = useState('');
@@ -125,4 +125,4 @@ function Recipes() {
   );
 }
 
-export default Recipes;
+export default DoneRecipes;

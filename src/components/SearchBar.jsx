@@ -1,58 +1,49 @@
 import PropTypes from 'prop-types';
-import React, { useState, useContext } from 'react';
-import HeaderContext from '../context/HeaderContext';
+import React, { useContext, useState } from 'react';
+import RecipesContext from '../context/RecipesContext';
+import { fetchBySearch } from '../services/fetchs';
 
-function SearchBar(props) {
-  const { drink } = props;
-  const URL_TYPE = drink ? 'thecocktaildb' : 'themealdb';
-  const { setData, search } = useContext(HeaderContext);
-  const [searchType, setSearchType] = useState('');
-  const URL_API_INGREDIENTES = `https://www.${URL_TYPE}.com/api/json/v1/1/filter.php?i=${search}`;
-  const URL_API_NOME = `https://www.${URL_TYPE}.com/api/json/v1/1/search.php?s=${search}`;
-  const URL_API_FIRST_LETTER = `https://www.${URL_TYPE}.com/api/json/v1/1/search.php?f=${search}`;
+function SearchBar({ type }) {
+  const { setRecipes, setMakeSearch } = useContext(RecipesContext);
 
-  async function fetchType(type) {
-    let URL;
-    switch (type) {
-    case 'ingredient':
-      URL = URL_API_INGREDIENTES;
-      break;
-    case 'name':
-      URL = URL_API_NOME;
-      break;
-    case 'first-letter':
-      URL = URL_API_FIRST_LETTER;
-      break;
-    default:
-      break;
-    }
-    const responseAPI = await fetch(URL);
-    const dataAPI = await responseAPI.json();
-    const isDrink = drink ? 'drinks' : 'meals';
-    if (dataAPI[isDrink] === null) {
-      global.alert('Sorry, we haven\'t found any recipes for these filters.');
-    } else {
-      setData(dataAPI[isDrink]);
-    }
-  }
+  const [search, setSearch] = useState({
+    text: '',
+    type: '',
+  });
+
+  const handleChange = ({ target: { name, value } }) => {
+    setSearch({
+      ...search,
+      [name]: value,
+    });
+  };
 
   const handleClick = () => {
-    if (searchType === 'first-letter' && search.length > 1) {
+    const verify = search.text.length !== 1 && search.type === 'first-letter';
+    if (verify) {
       global.alert('Your search must have only 1 (one) character');
     } else {
-      fetchType(searchType);
+      setMakeSearch(true);
+      fetchBySearch(type, search.type, search.text, setRecipes);
     }
   };
 
   return (
     <div>
+      <input
+        type="text"
+        data-testid="search-input"
+        value={ search.text }
+        name="text"
+        onChange={ handleChange }
+      />
       <label htmlFor="ingredient-search-radio">
         <input
           type="radio"
           data-testid="ingredient-search-radio"
-          name="search-radio"
+          name="type"
           value="ingredient"
-          onChange={ ({ target: { value } }) => setSearchType(value) }
+          onChange={ handleChange }
         />
         Ingredient
       </label>
@@ -60,9 +51,9 @@ function SearchBar(props) {
         <input
           type="radio"
           data-testid="name-search-radio"
-          name="search-radio"
+          name="type"
           value="name"
-          onChange={ ({ target: { value } }) => setSearchType(value) }
+          onChange={ handleChange }
         />
         Name
       </label>
@@ -70,26 +61,21 @@ function SearchBar(props) {
         <input
           type="radio"
           data-testid="first-letter-search-radio"
-          name="search-radio"
+          name="type"
           value="first-letter"
-          onChange={ ({ target: { value } }) => setSearchType(value) }
+          onChange={ handleChange }
         />
         First letter
       </label>
-      <button
-        type="button"
-        data-testid="exec-search-btn"
-        onClick={ handleClick }
-      >
+      <button type="button" data-testid="exec-search-btn" onClick={ handleClick }>
         Pesquisar
       </button>
     </div>
-
   );
 }
 
 SearchBar.propTypes = {
-  drink: PropTypes.bool.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 export default SearchBar;
