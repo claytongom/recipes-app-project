@@ -1,40 +1,31 @@
-// import { screen, waitFor } from '@testing-library/react';
-// import { act } from 'react-dom/test-utils';
-// import RecipeDetails from '../pages/RecipeDetails';
-// import mockSushi from './helpers/Mocks/Recipes/mockSushi';
-// import renderWithRouterAndContextProvider from './helpers/renderWithRouterAndContextProvider';
-// import getTitleAndButton from '../helpers/getTitleAndButton';
-// import mockData from './helpers/Mocks/Recipes/mockData';
-// import App from '../App';
-// import Recipes from '../pages/DoneRecipes';
+import { act } from 'react-dom/test-utils';
+import { screen, waitFor } from '@testing-library/react';
+import renderWithRouterAndContextProvider from './helpers/renderWithRouterAndContextProvider';
+import App from '../App';
 
-// jest.mock('../helpers/getTitleAndButton');
+describe('Teste da página Recipe Details', () => {
+  beforeEach(async () => {
+    const { history } = renderWithRouterAndContextProvider(<App />);
 
-// describe('Teste da página Recipe Details', () => {
-//   // Fazendo o mock da receita e a renderização da página Recipe Details.
-//   beforeEach(async () => {
-//     const { history } = renderWithRouterAndContextProvider(<App />);
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: jest
+        .fn()
+        .mockResolvedValue(
+          fetch(
+            'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=178319',
+          ),
+        )
+        .mockResolvedValueOnce(
+          fetch('https://www.themealdb.com/api/json/v1/1/search.php?s='),
+        ),
+    });
 
-//     jest.spyOn(global, 'fetch').mockResolvedValue({
-//       json: jest
-//         .fn()
-//         .mockResolvedValue(mockSushi)
-//         .mockResolvedValueOnce(mockData),
-//     });
+    act(() => {
+      history.push('/drinks/178319');
+    });
 
-//     getTitleAndButton.mockReturnValue({
-//       title: 'Meals',
-//       haveButton: false,
-//     });
+    screen.logTestingPlaygroundURL();
+  });
 
-//     act(() => {
-//       history.push('/meals/53065');
-//     });
-
-//     // await waitFor(() => {
-//     //   expect(screen.getByText(/corba/i)).toBeInTheDocument();
-//     // });
-//   });
-
-//   test('Verifica se possui um título para o nome da receita', () => {});
-// });
+  test('should first', () => {});
+});

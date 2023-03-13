@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import DetailsHeader from '../styles/DetailsHeader';
+import PatternHeading from '../styles/PatternHeading';
 import BtnsFavAndShare from './BtnsFavAndShare';
+import logo from '../images/chef.png';
 
 function DetailsCard({ id, recipe, ingredients, type }) {
   const [video, setVideo] = useState('');
@@ -25,7 +28,12 @@ function DetailsCard({ id, recipe, ingredients, type }) {
 
   return (
     <div>
-      <h1 data-testid="recipe-title">{recipe.strMeal || recipe.strDrink}</h1>
+      <DetailsHeader>
+        <img src={ logo } alt="Imagem logo" />
+        <PatternHeading data-testid="recipe-title">
+          {recipe.strMeal || recipe.strDrink}
+        </PatternHeading>
+      </DetailsHeader>
 
       <img
         src={ recipe.strMealThumb || recipe.strDrinkThumb }
@@ -43,7 +51,7 @@ function DetailsCard({ id, recipe, ingredients, type }) {
       <h2>Ingredients</h2>
       <ul>{renderIngredients}</ul>
 
-      <h2>Intructions</h2>
+      <h2>Instructions</h2>
       <p data-testid="instructions">{recipe.strInstructions}</p>
 
       {recipe.strYoutube && (
