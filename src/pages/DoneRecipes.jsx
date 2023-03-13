@@ -39,12 +39,8 @@ function DoneRecipes() {
   return (
     <div>
       <Header
-        headerTypes={ {
-          title: 'Done Recipes',
-          searchButton: false,
-          profileIcone: true,
-          drink: false,
-        } }
+        title="Done Recipes"
+        searchButton={ false }
       />
       <div>
         <div>

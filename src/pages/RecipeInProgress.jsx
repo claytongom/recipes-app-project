@@ -8,23 +8,18 @@ import { recipeIsInFavoriteRecipes,
   addToFavoriteRecipes, removeFromFavoriteRecipes } from '../services/favoriteRecipesLS';
 import whiteHeart from '../images/whiteHeartIcon.svg';
 import blackHeart from '../images/blackHeartIcon.svg';
+import { getInProgressRecipes } from '../services/inProgressRecipesLS';
 
 export default function RecipesInProgress() {
   const [isFavorite, setIsFavorite] = useState(false);
   const { pathname } = useLocation();
   const { id } = useParams();
-  const [pageInfo, setPageInfo] = useState({
-    title: '',
-    haveButton: true,
-  });
+  const [pageInfo] = useState(getTitleAndButton(pathname));
   const [recipeData, setRecipeData] = useState({});
   const [instructions, setInstructions] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [copied, setCopied] = useState(false);
   const history = useHistory();
-  useEffect(() => {
-    setPageInfo(getTitleAndButton(pathname));
-  }, [pathname]);
 
   useEffect(() => {
     if (copied) {
@@ -40,21 +35,9 @@ export default function RecipesInProgress() {
 
   useEffect(() => {
     fetchByIds(pageInfo.title, id, setRecipeData);
+    const newIngredients = getInProgressRecipes();
+    setInstructions(newIngredients[pageInfo.title.toLowerCase()][id]);
   }, [id, pageInfo]);
-
-  useEffect(() => {
-    if (recipeData.strInstructions) {
-      const splitedData = recipeData.strInstructions
-        .split('.').filter((instruction) => instruction !== '');
-      const objectData = splitedData.map((el) => ({
-        name: el,
-        checked: false,
-      }));
-      setInstructions(objectData);
-      const verifyCheck = objectData.some((el) => el.checked === false);
-      setDisabled(verifyCheck);
-    }
-  }, [recipeData]);
 
   useEffect(() => {
     const verifyCheck = instructions.some((el) => el.checked === false);
@@ -94,27 +77,27 @@ export default function RecipesInProgress() {
         data-testid="recipe-photo"
         alt="Foto da receita"
       />
+      <button
+        data-testid="share-btn"
+        type="button"
+        onClick={ () => {
+          copy(document.location.href);
+          setCopied(true);
+        } }
+      >
+        Compartilhar
+      </button>
+      <button onClick={ toggleFav }>
+        Favoritar
+        <img
+          src={ isFavorite ? blackHeart : whiteHeart }
+          alt="coração"
+          data-testid="favorite-btn"
+        />
+      </button>
       <h1 data-testid="recipe-title">{ recipeData.strDrink || recipeData.strMeal }</h1>
       <div className="FixedBottomLeft">
         {copied && <p>Link copied!</p>}
-        <button
-          data-testid="share-btn"
-          type="button"
-          onClick={ () => {
-            copy(document.location.href);
-            setCopied(true);
-          } }
-        >
-          Compartilhar
-        </button>
-        <button onClick={ toggleFav }>
-          Favoritar
-          <img
-            src={ isFavorite ? blackHeart : whiteHeart }
-            alt="coração"
-            data-testid="favorite-btn"
-          />
-        </button>
       </div>
       <h2 data-testid="recipe-category">{ recipeData.strCategory }</h2>
       <h3 data-testid="instructions">Instruções</h3>
@@ -126,9 +109,9 @@ export default function RecipesInProgress() {
             onChange={ () => handleChange(index) }
           />
           <span
-            className={ el.checked && 'CheckBoxColor' }
+            className={ el.checked ? 'CheckBoxColor' : undefined }
           >
-            { el.name }
+            { el.ingredient }
           </span>
         </label>
       ))}
