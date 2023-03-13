@@ -9,6 +9,11 @@ const HeaderWrapper = styled.div`
   margin-bottom: 12px;
   box-shadow: 0 0 5px 0 black;
 
+  & > div {
+    display: flex;
+    gap: 6px;
+  }
+
   & button {
     background: transparent;
     border: none;

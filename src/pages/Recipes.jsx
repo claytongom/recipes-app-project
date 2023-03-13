@@ -96,8 +96,6 @@ function Recipes() {
                 name={ item.strDrink || item.strMeal }
                 image={ item.strMealThumb || item.strDrinkThumb }
                 page={ pageInfo.title.toLowerCase() }
-                area={ item.strArea }
-                category={ item.strCategory }
               />
             ))
             .slice(0, MAX_RECIPES)}
