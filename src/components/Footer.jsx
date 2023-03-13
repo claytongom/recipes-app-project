@@ -2,10 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import mealIcon from '../images/mealIcon.svg';
 import drinkIcon from '../images/drinkIcon.svg';
+import FooterWrapper from '../styles/FooterWrapper';
 
 export default function Footer() {
   return (
-    <footer
+    <FooterWrapper
       style={ {
         position: 'fixed',
         bottom: '0px',
@@ -18,6 +19,6 @@ export default function Footer() {
       <Link to="/drinks">
         <img src={ drinkIcon } alt="Drink Icon" data-testid="drinks-bottom-btn" />
       </Link>
-    </footer>
+    </FooterWrapper>
   );
 }

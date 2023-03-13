@@ -2,6 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import RecipesContext from '../context/RecipesContext';
 import { fetchBySearch } from '../services/fetchs';
+import SearchBarWrapper from '../styles/SearchBarWrapper';
+import StyledButton from '../styles/StyledButton';
+import StyledInput from '../styles/StyledInput';
+import StyledLabel from '../styles/StyledLabel';
 
 function SearchBar({ type }) {
   const { setRecipes, setMakeSearch } = useContext(RecipesContext);
@@ -29,48 +33,54 @@ function SearchBar({ type }) {
   };
 
   return (
-    <div>
-      <input
+    <SearchBarWrapper>
+      <StyledInput
         type="text"
         data-testid="search-input"
         value={ search.text }
         name="text"
         onChange={ handleChange }
       />
-      <label htmlFor="ingredient-search-radio">
-        <input
-          type="radio"
-          data-testid="ingredient-search-radio"
-          name="type"
-          value="ingredient"
-          onChange={ handleChange }
-        />
-        Ingredient
-      </label>
-      <label htmlFor="name-search-radio">
-        <input
-          type="radio"
-          data-testid="name-search-radio"
-          name="type"
-          value="name"
-          onChange={ handleChange }
-        />
-        Name
-      </label>
-      <label htmlFor="first-letter-search-radio">
-        <input
-          type="radio"
-          data-testid="first-letter-search-radio"
-          name="type"
-          value="first-letter"
-          onChange={ handleChange }
-        />
-        First letter
-      </label>
-      <button type="button" data-testid="exec-search-btn" onClick={ handleClick }>
+      <div>
+        <StyledLabel htmlFor="ingredient-search-radio">
+          <input
+            type="radio"
+            data-testid="ingredient-search-radio"
+            name="type"
+            value="ingredient"
+            onChange={ handleChange }
+          />
+          Ingredient
+        </StyledLabel>
+        <StyledLabel htmlFor="name-search-radio">
+          <input
+            type="radio"
+            data-testid="name-search-radio"
+            name="type"
+            value="name"
+            onChange={ handleChange }
+          />
+          Name
+        </StyledLabel>
+        <StyledLabel htmlFor="first-letter-search-radio">
+          <input
+            type="radio"
+            data-testid="first-letter-search-radio"
+            name="type"
+            value="first-letter"
+            onChange={ handleChange }
+          />
+          First letter
+        </StyledLabel>
+      </div>
+      <StyledButton
+        type="button"
+        data-testid="exec-search-btn"
+        onClick={ handleClick }
+      >
         Pesquisar
-      </button>
-    </div>
+      </StyledButton>
+    </SearchBarWrapper>
   );
 }
 
