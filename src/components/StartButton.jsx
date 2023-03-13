@@ -20,7 +20,6 @@ function StartButton({ id, type, ingredients, history }) {
       ...ingredient,
       checked: false,
     }));
-    console.log(objectData);
     addToInProgressRecipes(id, type.toLowerCase(), objectData);
     history.push(`/${type.toLowerCase()}/${id}/in-progress`);
   };

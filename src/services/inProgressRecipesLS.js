@@ -48,6 +48,17 @@ export const removeFromInProgressRecipes = (idRecipe, type) => {
   }
 };
 
+export const updateInProgressRecipes = (idRecipe, type, ingredients) => {
+  if (verifyLocalInProgressRecipe()) {
+    const inProgressRecipes = getInProgressRecipes();
+    inProgressRecipes[type.toLowerCase()][idRecipe] = ingredients;
+    localStorage.setItem(
+      'inProgressRecipes',
+      JSON.stringify(inProgressRecipes),
+    );
+  }
+};
+
 export const recipeIsInProgressRecipes = (idRecipe, type, fn) => {
   if (verifyLocalInProgressRecipe) {
     const inProgressRecipes = getInProgressRecipes();
