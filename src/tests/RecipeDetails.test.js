@@ -1,31 +1,22 @@
 import renderWithRouterAndContextProvider from './helpers/renderWithRouterAndContextProvider';
 import App from '../App';
+import fetch from '../../cypress/mocks/fetch';
 import { act } from 'react-dom/test-utils';
 import { screen, waitFor } from '@testing-library/react';
 
 describe('Teste da página Recipe Details', () => {
   beforeEach(async () => {
+    global.fetch = jest.fn(fetch);
+  });
+
+  test('should first', async () => {
     const { history } = renderWithRouterAndContextProvider(<App />);
-
-    jest.spyOn(global, 'fetch').mockResolvedValue({
-      json: jest
-        .fn()
-        .mockResolvedValue(
-          fetch(
-            'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=178319'
-          )
-        )
-        .mockResolvedValueOnce(
-          fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=')
-        ),
-    });
-
     act(() => {
       history.push('/drinks/178319');
     });
 
-    screen.logTestingPlaygroundURL();
+    await waitFor(() => {
+      screen.getByText('Aquamarine');
+    });
   });
-
-  test('should first', () => {});
 });
