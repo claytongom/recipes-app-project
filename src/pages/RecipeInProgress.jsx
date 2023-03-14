@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import BtnFinish from '../components/BtnFinish';
 import BtnsFavAndShare from '../components/BtnsFavAndShare';
 import getTitleAndButton from '../helpers/getTitleAndButton';
@@ -88,7 +88,13 @@ function RecipeInProgress() {
         <h2>Intructions</h2>
         <p data-testid="instructions">{recipe.strInstructions}</p>
       </DetailsWrapper>
-      <BtnFinish isFinished={ isFinished } />
+      <BtnFinish
+        isFinished={ isFinished }
+        history={ useHistory() }
+        id={ id }
+        recipe={ recipe }
+        type={ pageInfo.title }
+      />
     </>
   );
 }
