@@ -5,6 +5,7 @@ import {
   addToInProgressRecipes,
   recipeIsInProgressRecipes,
 } from '../services/inProgressRecipesLS';
+import StartFinishButton from '../styles/StartFinishButton';
 
 function StartButton({ id, type, ingredients, history }) {
   const [isDone, setIsDone] = useState(false);
@@ -26,13 +27,13 @@ function StartButton({ id, type, ingredients, history }) {
 
   return (
     !isDone && (
-      <button
+      <StartFinishButton
         data-testid="start-recipe-btn"
         className="FixedBottom"
         onClick={ handleClick }
       >
         {isInProgress ? 'Continue Recipe' : 'Start Recipe'}
-      </button>
+      </StartFinishButton>
     )
   );
 }

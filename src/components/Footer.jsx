@@ -6,7 +6,7 @@ import FooterWrapper from '../styles/FooterWrapper';
 
 export default function Footer() {
   return (
-    <FooterWrapper>
+    <FooterWrapper data-testid="footer">
       <Link to="/meals">
         <img src={ mealIcon } alt="Meal Icon" data-testid="meals-bottom-btn" />
       </Link>

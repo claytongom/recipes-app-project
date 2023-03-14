@@ -9,6 +9,7 @@ const DetailsHeader = styled.header`
   & > img {
     width: 65px;
   }
+  margin-bottom: 12px;
 `;
 
 export default DetailsHeader;

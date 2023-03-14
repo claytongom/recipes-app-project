@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import StartFinishButton from '../styles/StartFinishButton';
 
 function BtnFinish({ isFinished }) {
   return (
-    <button data-testid="finish-recipe-btn" disabled={ isFinished }>
+    <StartFinishButton data-testid="finish-recipe-btn" disabled={ isFinished }>
       Finish Recipe
-    </button>
+    </StartFinishButton>
   );
 }
 

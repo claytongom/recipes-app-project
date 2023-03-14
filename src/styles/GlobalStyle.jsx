@@ -15,6 +15,10 @@ const GlobalStyle = createGlobalStyle`
     a {
         text-decoration: none;
     }
+
+    .marked {
+        text-decoration: line-through solid black;
+    }
 `;
 
 export default GlobalStyle;
