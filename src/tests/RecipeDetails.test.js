@@ -168,4 +168,6 @@ describe('Teste da página Recipe Details', () => {
       'http://localhost/whiteHeartIcon.svg'
     );
   });
+
+  // fazer um novo teste baseado no teste acima porém usando uma bebida.
 });
