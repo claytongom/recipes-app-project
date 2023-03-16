@@ -126,7 +126,7 @@ export default function RecipesInProgress() {
             onChange={ () => handleChange(index) }
           />
           <span
-            className={ el.checked && 'CheckBoxColor' }
+            className={ el.checked ? 'CheckBoxColor' :  undefined }
           >
             { el.name }
           </span>
