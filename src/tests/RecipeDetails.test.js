@@ -46,11 +46,10 @@ describe('Teste da página Recipe Details', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('favorite-btn')).toBeInTheDocument();
+      expect(screen.getByText(/alcoholic/i)).toBeInTheDocument();
     });
     expect(screen.getByTestId('share-btn')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /share/i }));
-    screen.logTestingPlaygroundURL();
   });
 
   test('Verifica se ao clicar no botão "Start Recipe" a rota é alterada', async () => {
@@ -79,13 +78,14 @@ describe('Teste da página Recipe Details', () => {
 
   //   await waitFor(() => {
   //     expect(screen.getByRole('img', { name: /corba/i })).toBeInTheDocument();
+  //     expect(screen.getByRole('img', { name: /https:\/\/www\.thecocktaildb\.com\/images\/media\/drink\/zvsre31572902738\.jpg/i })).toBeInTheDocument();
   //   });
 
-  //   const btnShare = screen.getByRole('button', { name: /share/i });
-  //   // const btnFavorite = screen.getByRole('button', { name: /share/i });
-  //   act(() => {
-  //     // userEvent.click(btnShare);
-  //   });
-  //   // await waitFor(() => expect(screen.getByText('Link copied!')).toBeInTheDocument());
+  // const btnShare = screen.getByRole('button', { name: /share/i });
+  // const btnFavorite = screen.getByRole('button', { name: /share/i });
+  // act(() => {
+  //   userEvent.click(btnShare);
+  // });
+  // await waitFor(() => expect(screen.getByText('Link copied!')).toBeInTheDocument());
   // });
 });
