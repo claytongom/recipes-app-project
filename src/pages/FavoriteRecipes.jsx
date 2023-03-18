@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import copy from 'clipboard-copy';
 import shareIcon from '../images/shareIcon.svg';
 import blackHeartIcon from '../images/blackHeartIcon.svg';
 import Gift from '../components/Gift';
@@ -18,8 +19,12 @@ function FavoriteRecipes() {
   const [showGift, setShowGift] = useState(false);
   // executar as receitas que estão salvas
   useEffect(() => {
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    if (favoriteRecipes) setFavorites(favoriteRecipes);
+    if (localStorage.getItem('favoriteRecipes')) {
+      const favoriteRecipes = JSON.parse(
+        localStorage.getItem('favoriteRecipes'),
+      );
+      setFavorites(favoriteRecipes);
+    }
   }, []);
   // execuntando as receitas COMIDAS e BEBIDAS
   useEffect(() => {
@@ -59,7 +64,7 @@ function FavoriteRecipes() {
       type === 'meal' ? `${BASE_URL}/meals/${id}` : `${BASE_URL}/drinks/${id}`;
 
     showAlert();
-    navigator.clipboard.writeText(url);
+    copy(url);
   };
   // filtrando as receitas
   const handleFilter = (type) => {
