@@ -1,18 +1,15 @@
-import {
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
+import copy from 'clipboard-copy';
 import renderWithRouterAndContextProvider from './helpers/renderWithRouterAndContextProvider';
 import App from '../App';
 import fetch from '../../cypress/mocks/fetch';
-import copy from 'clipboard-copy';
 
 jest.mock('clipboard-copy');
 jest.useFakeTimers();
 
+const whiteHeartIcon = 'http://localhost/whiteHeartIcon.svg';
 const endPoint = '/drinks/178319';
 const endPointMeals = '/meals/52771';
 describe('Teste da página Recipe Details', () => {
@@ -35,7 +32,7 @@ describe('Teste da página Recipe Details', () => {
     expect(
       screen.getByRole('img', {
         name: /https:\/\/www\.thecocktaildb\.com\/images\/media\/drink\/zvsre31572902738\.jpg/i,
-      })
+      }),
     ).toBeInTheDocument();
     expect(screen.getByText(/alcoholic/i)).toBeInTheDocument();
   });
@@ -101,11 +98,11 @@ describe('Teste da página Recipe Details', () => {
       JSON.stringify({
         drinks: { 178319: [[Object], [Object], [Object]] },
         meals: {},
-      })
+      }),
     );
 
     expect(
-      screen.getByRole('button', { name: /continue recipe/i })
+      screen.getByRole('button', { name: /continue recipe/i }),
     ).toBeInTheDocument();
   });
 
@@ -120,7 +117,7 @@ describe('Teste da página Recipe Details', () => {
     });
 
     copy.mockImplementation(
-      () => 'http://localhost:3000/drinks/178319/in-progress'
+      () => 'http://localhost:3000/drinks/178319/in-progress',
     );
 
     const btnShare = screen.getByRole('button', { name: /share/i });
@@ -135,7 +132,7 @@ describe('Teste da página Recipe Details', () => {
     });
   });
 
-  test('testando o botão "favorite"', async () => {
+  test('testando o botão "favorite" usando a rota de comidas', async () => {
     const { history } = renderWithRouterAndContextProvider(<App />);
     act(() => {
       history.push(endPointMeals);
@@ -148,14 +145,14 @@ describe('Teste da página Recipe Details', () => {
     const btnFavorite = screen.getByRole('img', { name: /coração/i });
     expect(btnFavorite).toHaveProperty(
       'src',
-      'http://localhost/whiteHeartIcon.svg'
+      whiteHeartIcon,
     );
     act(() => {
       userEvent.click(btnFavorite);
     });
     expect(btnFavorite).not.toHaveProperty(
       'src',
-      'http://localhost/whiteHeartIcon.svg'
+      whiteHeartIcon,
     );
     const FavoriteLS = JSON.parse(localStorage.getItem('favoriteRecipes'));
     expect(FavoriteLS[0].name).toBe('Spicy Arrabiata Penne');
@@ -165,9 +162,40 @@ describe('Teste da página Recipe Details', () => {
     });
     expect(btnFavorite).toHaveProperty(
       'src',
-      'http://localhost/whiteHeartIcon.svg'
+      whiteHeartIcon,
     );
   });
 
-  // fazer um novo teste baseado no teste acima porém usando uma bebida.
+  test('testando o botão "favorite usando a rota de bebidas"', async () => {
+    const { history } = renderWithRouterAndContextProvider(<App />);
+    act(() => {
+      history.push(endPoint);
+    });
+    await waitFor(() => {
+      screen.getByText('Aquamarine');
+    });
+
+    const btnFavorite = screen.getByRole('img', { name: /coração/i });
+    expect(btnFavorite).toHaveProperty(
+      'src',
+      whiteHeartIcon,
+    );
+    act(() => {
+      userEvent.click(btnFavorite);
+    });
+    expect(btnFavorite).not.toHaveProperty(
+      'src',
+      whiteHeartIcon,
+    );
+    const FavoriteLS = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    expect(FavoriteLS[0].name).toBe('Aquamarine');
+
+    act(() => {
+      userEvent.click(btnFavorite);
+    });
+    expect(btnFavorite).toHaveProperty(
+      'src',
+      whiteHeartIcon,
+    );
+  });
 });
