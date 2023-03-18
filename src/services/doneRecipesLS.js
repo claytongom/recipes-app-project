@@ -21,12 +21,12 @@ export const addToDoneRecipes = (idRecipe, type, recipe) => {
   const newRecipe = {
     id: recipe.idMeal || recipe.idDrink,
     type: type === 'Meals' ? 'meal' : 'drink',
-    nationality: recipe.strArea,
+    nationality: recipe.strArea || '',
     category: recipe.strCategory || '',
     alcoholicOrNot: recipe.strAlcoholic || '',
     name: recipe.strMeal || recipe.strDrink,
     image: recipe.strDrinkThumb || recipe.strMealThumb,
-    doneDate: `${today.getDate()}-${today.getMonth()}-${today.getFullYear()}`,
+    doneDate: today,
     tags: recipe.strTags ? recipe.strTags.split(',') : [],
   };
 

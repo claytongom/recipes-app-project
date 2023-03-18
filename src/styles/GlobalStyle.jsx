@@ -17,7 +17,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     .marked {
-        text-decoration: line-through solid black;
+        text-decoration: line-through solid rgb(0, 0, 0);
     }
 `;
 

@@ -32,7 +32,7 @@ function BtnsFavAndShare({ id, recipe, type }) {
   }, [copied]);
 
   const copyFunction = () => {
-    copy(document.location.href);
+    copy(`http://localhost:3000/${type.toLowerCase()}/${id}`);
     setCopied(true);
   };
 

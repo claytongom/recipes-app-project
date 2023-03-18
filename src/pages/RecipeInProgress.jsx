@@ -25,8 +25,45 @@ function RecipeInProgress() {
 
   useEffect(() => {
     fetchByIds(pageInfo.title, id, setRecipe);
-    setIngredients(getInProgressRecipes()[pageInfo.title.toLowerCase()][id]);
   }, [id, pageInfo]);
+
+  useEffect(() => {
+    const getIngredients = () => {
+      const ingredientData = Object.entries(recipe).filter((item) => {
+        const str = item[0].includes('strIngredient') || item[0].includes('strMeasure');
+        const isNotNull = item[1];
+        const isNotEmpty = isNotNull
+          ? item[1] !== '' && item[1] !== ' '
+          : isNotNull;
+        if (str && isNotEmpty) {
+          return item;
+        }
+        return false;
+      });
+
+      // Partindo no meio o array que veio metade ingrediente e metade medidas
+      const max = ingredientData.length / 2;
+      const ingredientPart = ingredientData
+        .slice(0, max)
+        .map((ingredient) => ingredient[1]);
+
+      const measurePart = ingredientData
+        .slice(max)
+        .map((measure) => measure[1]);
+      // o map acima retira somente os nomes e valores.
+
+      // o map abaixo junta o nome e valor do ingrediente e um objeto e faz um array com esses objetos
+      return ingredientPart.map((ingredient, index) => ({
+        ingredient,
+        measure: measurePart[index],
+        checked: false,
+      }));
+    };
+    setIngredients(
+      getInProgressRecipes()[pageInfo.title.toLowerCase()][id]
+        || getIngredients(),
+    );
+  }, [recipe, pageInfo, id]);
 
   useEffect(() => {
     if (ingredients.length > 0) {
@@ -71,16 +108,17 @@ function RecipeInProgress() {
         <h2>Ingredientes</h2>
         <RadioWrapper>
           {ingredients.map((ingredient, index) => (
-            <label key={ index }>
+            <label
+              key={ index }
+              data-testid={ `${index}-ingredient-step` }
+              className={ ingredient.checked ? 'marked' : undefined }
+            >
               <input
                 type="checkbox"
                 checked={ ingredient.checked }
-                data-testid={ `${index}-ingredient-step` }
                 onChange={ () => handleChange(index) }
               />
-              <span className={ ingredient.checked ? 'marked' : undefined }>
-                {`${ingredient.ingredient} - ${ingredient.measure}`}
-              </span>
+              <span>{`${ingredient.ingredient} - ${ingredient.measure}`}</span>
             </label>
           ))}
         </RadioWrapper>
