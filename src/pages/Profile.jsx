@@ -33,7 +33,7 @@ function Profile() {
 
   return (
     <div>
-      <Header title={pageInfo.title} searchButton={pageInfo.haveButton} />
+      <Header title={ pageInfo.title } searchButton={ pageInfo.haveButton } />
       <StyledEmail data-testid="profile-email">
         <span>E-mail:</span>
         {`${email}`}
@@ -42,19 +42,22 @@ function Profile() {
         <FilterButton
           type="button"
           data-testid="profile-done-btn"
-          onClick={() => history.push('/done-recipes')}>
+          onClick={ () => history.push('/done-recipes') }
+        >
           Done Recipes
         </FilterButton>
         <FilterButton
           type="button"
           data-testid="profile-favorite-btn"
-          onClick={() => history.push('/favorite-recipes')}>
+          onClick={ () => history.push('/favorite-recipes') }
+        >
           Favorite Recipes
         </FilterButton>
         <FilterButton
           type="button"
           data-testid="profile-logout-btn"
-          onClick={DoLogout}>
+          onClick={ DoLogout }
+        >
           Logout
         </FilterButton>
       </FiltersWrapper>

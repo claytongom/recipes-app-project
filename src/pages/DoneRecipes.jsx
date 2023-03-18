@@ -29,16 +29,16 @@ function DoneRecipes() {
   useEffect(() => {
     const filterDoneRecipes = () => {
       const filterDoneRecipesList = JSON.parse(
-        localStorage.getItem('doneRecipes')
+        localStorage.getItem('doneRecipes'),
       );
       if (filter === 'meals') {
         const listFiltered = filterDoneRecipesList.filter(
-          ({ type }) => type === 'meal'
+          ({ type }) => type === 'meal',
         );
         setDoneRecipesItens([...listFiltered]);
       } else if (filter === 'drinks') {
         const listFiltered = filterDoneRecipesList.filter(
-          ({ type }) => type === 'drink'
+          ({ type }) => type === 'drink',
         );
         setDoneRecipesItens([...listFiltered]);
       } else {
@@ -57,69 +57,74 @@ function DoneRecipes() {
 
   return (
     <div>
-      <Header title="Done Recipes" searchButton={false} />
+      <Header title="Done Recipes" searchButton={ false } />
       <div>
         <div>
           <FiltersWrapper>
             <FilterButton
               type="button"
               data-testid="filter-by-all-btn"
-              onClick={() => setFilter('')}>
+              onClick={ () => setFilter('') }
+            >
               All
             </FilterButton>
             <FilterButton
               type="button"
               data-testid="filter-by-meal-btn"
-              onClick={() => setFilter('meals')}>
+              onClick={ () => setFilter('meals') }
+            >
               Meals
             </FilterButton>
             <FilterButton
               type="button"
               data-testid="filter-by-drink-btn"
-              onClick={() => setFilter('drinks')}>
+              onClick={ () => setFilter('drinks') }
+            >
               Drinks
             </FilterButton>
           </FiltersWrapper>
           <DoneWrapper>
             {doneRecipesItens.map((recipe, index) => (
-              <DoneCard key={index}>
-                <Link to={`${recipe.type}s/${recipe.id}`}>
+              <DoneCard key={ index }>
+                <Link to={ `${recipe.type}s/${recipe.id}` }>
                   <img
                     width="100"
                     height="100"
-                    data-testid={`${index}-horizontal-image`}
-                    src={recipe.image}
-                    alt={recipe.name}
+                    data-testid={ `${index}-horizontal-image` }
+                    src={ recipe.image }
+                    alt={ recipe.name }
                   />
                 </Link>
                 <div>
-                  <span data-testid={`${index}-horizontal-top-text`}>
+                  <span data-testid={ `${index}-horizontal-top-text` }>
                     {recipe.type === 'meal'
                       ? `${recipe.nationality} - ${recipe.category}`
                       : recipe.alcoholicOrNot}
                   </span>
-                  <Link to={`/${recipe.type}s/${recipe.id}`}>
-                    <span data-testid={`${index}-horizontal-name`}>
+                  <Link to={ `/${recipe.type}s/${recipe.id}` }>
+                    <span data-testid={ `${index}-horizontal-name` }>
                       {recipe.name}
                     </span>
                   </Link>
 
-                  <span data-testid={`${index}-horizontal-done-date`}>
+                  <span data-testid={ `${index}-horizontal-done-date` }>
                     {recipe.doneDate}
                   </span>
                   {recipe.tags.map((item) => (
                     <span
-                      data-testid={`${index}-${item}-horizontal-tag`}
-                      key={item}>
+                      data-testid={ `${index}-${item}-horizontal-tag` }
+                      key={ item }
+                    >
                       {item}
                     </span>
                   ))}
                   <button
                     type="button"
-                    data-testid={`${index}-horizontal-share-btn`}
-                    src={shareIcon}
-                    onClick={() => copyToClipboard(recipe)}>
-                    <img src={shareIcon} alt="share" />
+                    data-testid={ `${index}-horizontal-share-btn` }
+                    src={ shareIcon }
+                    onClick={ () => copyToClipboard(recipe) }
+                  >
+                    <img src={ shareIcon } alt="share" />
                   </button>
                   {linkCopied && <span>Link copied!</span>}
                 </div>
