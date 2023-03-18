@@ -11,6 +11,28 @@ jest.mock('../helpers/getTitleAndButton');
 jest.mock('clipboard-copy');
 jest.useFakeTimers();
 
+const favoriteRecipes = [
+  {
+    id: '53065',
+    type: 'meal',
+    nationality: 'Japanese',
+    category: 'Seafood',
+    alcoholicOrNot: '',
+    image: 'https://www.themealdb.com/images/media/meals/g046bb1663960946.jpg',
+    name: 'Sushi',
+  },
+  {
+    id: '17837',
+    type: 'drink',
+    nationality: '',
+    category: 'Ordinary Drink',
+    alcoholicOrNot: 'Alcoholic',
+    image:
+      'https://www.thecocktaildb.com/images/media/drink/v0at4i1582478473.jpg',
+    name: 'Adam',
+  },
+];
+
 describe('Testes da tela de Receitas Favoritas', () => {
   const mealName = 'Sushi';
   const drinkName = 'Adam';
@@ -19,30 +41,6 @@ describe('Testes da tela de Receitas Favoritas', () => {
   const allFilterName = 'filter-by-all-btn';
   // antes de cada Card favoritado
   beforeEach(() => {
-    const favoriteRecipes = [
-      {
-        id: '53065',
-        type: 'meal',
-        nationality: 'Japanese',
-        category: 'Seafood',
-        alcoholicOrNot: '',
-        image:
-          'https://www.themealdb.com/images/media/meals/g046bb1663960946.jpg',
-        name: 'Sushi',
-      },
-      {
-        id: '17837',
-        type: 'drink',
-        nationality: '',
-        category: 'Ordinary Drink',
-        alcoholicOrNot: 'Alcoholic',
-        image:
-          'https://www.thecocktaildb.com/images/media/drink/v0at4i1582478473.jpg',
-        name: 'Adam',
-      },
-    ];
-    localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipes));
-
     getTitleAndButton.mockReturnValue({
       title: 'Favorites Recipes',
       haveButton: false,
@@ -58,7 +56,6 @@ describe('Testes da tela de Receitas Favoritas', () => {
 
   test('teste se os botões de filtro estão na tela', () => {
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
-
     const mealFilter = screen.getByTestId(mealFilterName);
     const allFilter = screen.getByTestId(allFilterName);
     const drinkFilter = screen.getByTestId(drinkFilterName);
@@ -69,6 +66,7 @@ describe('Testes da tela de Receitas Favoritas', () => {
   });
 
   test('teste se as duas receitas favoritas estão na tela', () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipes));
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
 
     const meal = screen.getByText('Sushi');
@@ -79,6 +77,7 @@ describe('Testes da tela de Receitas Favoritas', () => {
   });
 
   test('teste o funcionamento do botão de desfavoritar', () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipes));
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
 
     const meal = screen.getByText(mealName);
@@ -93,6 +92,7 @@ describe('Testes da tela de Receitas Favoritas', () => {
   });
 
   test('teste funcionamento do botao de compartilhar', async () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipes));
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
     const mealShareBtn = screen.getByTestId('0-horizontal-share-btn');
 
@@ -110,6 +110,7 @@ describe('Testes da tela de Receitas Favoritas', () => {
   });
 
   test('teste o funcionamento do botão de filtro Meals', () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipes));
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
 
     const mealFilter = screen.getByTestId(mealFilterName);
@@ -119,6 +120,7 @@ describe('Testes da tela de Receitas Favoritas', () => {
   });
 
   test('teste o funcionamento do botão de filtro Drinks', () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipes));
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
     const drinksFilter = screen.getByTestId('filter-by-drink-btn');
 
@@ -127,6 +129,7 @@ describe('Testes da tela de Receitas Favoritas', () => {
   });
 
   test('teste o funcionamento do botão de filtro All', () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipes));
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
 
     const allFilter = screen.getByTestId(allFilterName);
@@ -136,12 +139,14 @@ describe('Testes da tela de Receitas Favoritas', () => {
   });
 
   test('teste se a imagem Meals aparece nos favoritos', () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipes));
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
     const imageMeals = screen.getByRole('img', { name: /sushi/i });
     expect(imageMeals).toBeInTheDocument();
   });
 
   test('teste se a imagem Drinks aparece nos favoritos', () => {
+    localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipes));
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
     const imageDrinks = screen.getByRole('img', { name: /adam/i });
     expect(imageDrinks).toBeInTheDocument();

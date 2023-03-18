@@ -17,8 +17,12 @@ function FavoriteRecipes() {
   const [showGift, setShowGift] = useState(false);
   // executar as receitas que estão salvas
   useEffect(() => {
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    if (favoriteRecipes) setFavorites(favoriteRecipes);
+    if (localStorage.getItem('favoriteRecipes')) {
+      const favoriteRecipes = JSON.parse(
+        localStorage.getItem('favoriteRecipes'),
+      );
+      setFavorites(favoriteRecipes);
+    }
   }, []);
   // execuntando as receitas COMIDAS e BEBIDAS
   useEffect(() => {
