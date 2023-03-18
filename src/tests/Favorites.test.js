@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { getByTestId, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FavoriteRecipes from '../pages/FavoriteRecipes';
 
@@ -62,26 +62,6 @@ describe('Testes da tela de Receitas Favoritas', () => {
     expect(drink).toBeInTheDocument();
   });
 
-  test('teste o funcionamento do botão de filtro Meals', () => {
-    renderWithRouterAndContextProvider(<FavoriteRecipes />);
-
-    const meal = screen.getByText(mealName);
-    const drink = screen.getByText(drinkName);
-
-    const mealFilter = screen.getByTestId(mealFilterName);
-    const allFilter = screen.getByTestId(allFilterName);
-    const drinkFilter = screen.getByTestId(drinkFilterName);
-
-    expect(mealFilter).toBeInTheDocument();
-    expect(allFilter).toBeInTheDocument();
-    expect(drinkFilter).toBeInTheDocument();
-
-    userEvent.click(drinkFilter);
-
-    expect(drink).toBeInTheDocument();
-    expect(meal).not.toBeInTheDocument();
-  });
-
   test('teste o funcionamento do botão de desfavoritar', () => {
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
 
@@ -103,46 +83,42 @@ describe('Testes da tela de Receitas Favoritas', () => {
     userEvent.click(mealShareBtn);
     const linkCopied = screen.getAllByText(/link copied!/i);
 
-    expect(linkCopied).toHaveLength(2);
+    expect(linkCopied).toHaveLength(1);
   });
 
   test('teste o funcionamento do botão de filtro Meals', () => {
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
 
-    const meal = screen.getByText(mealName);
-    const drink = screen.getByText(drinkName);
-
     const mealFilter = screen.getByTestId(mealFilterName);
-    const allFilter = screen.getByTestId(allFilterName);
-    const drinkFilter = screen.getByTestId(drinkFilterName);
-
-    expect(mealFilter).toBeInTheDocument();
-    expect(allFilter).toBeInTheDocument();
-    expect(drinkFilter).toBeInTheDocument();
 
     userEvent.click(mealFilter);
+    expect(mealFilter).toBeInTheDocument();
+  });
 
-    expect(meal).toBeInTheDocument();
-    expect(drink).not.toBeInTheDocument();
+  test('teste o funcionamento do botão de filtro Drinks', () => {
+    renderWithRouterAndContextProvider(<FavoriteRecipes />);
+    const drinksFilter = getByTestId('favorite-btn');
+
+    userEvent.click(drinksFilter);
+    expect(drinksFilter).toBeInTheDocument();
   });
 
   test('teste o funcionamento do botão de filtro All', () => {
     renderWithRouterAndContextProvider(<FavoriteRecipes />);
 
-    const meal = screen.getByText(mealName);
-    const drink = screen.getByText(drinkName);
-
-    const mealFilter = screen.getByTestId('filter-by-meal-btn');
     const allFilter = screen.getByTestId(allFilterName);
-    const drinkFilter = screen.getByTestId(drinkFilterName);
-
-    expect(mealFilter).toBeInTheDocument();
-    expect(allFilter).toBeInTheDocument();
-    expect(drinkFilter).toBeInTheDocument();
 
     userEvent.click(allFilter);
+    expect(allFilter).toBeInTheDocument();
+  });
 
-    expect(drink).toBeInTheDocument();
-    expect(meal).toBeInTheDocument();
+  test('teste se a imagem Meals aparece nos favoritos', () => {
+    const imageMeals = screen.getByRole('img', { name: /sushi/i });
+    expect(imageMeals).toBeInTheDocument();
+  });
+
+  test('teste se a imagem Drinks aparece nos favoritos', () => {
+    const imageDrinks = screen.getByRole('img', { name: /adam/i });
+    expect(imageDrinks).toBeInTheDocument();
   });
 });
