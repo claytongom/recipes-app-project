@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import BtnFinish from '../components/BtnFinish';
 import BtnsFavAndShare from '../components/BtnsFavAndShare';
 import getTitleAndButton from '../helpers/getTitleAndButton';
@@ -8,6 +8,12 @@ import {
   getInProgressRecipes,
   updateInProgressRecipes,
 } from '../services/inProgressRecipesLS';
+import DetailsHeader from '../styles/DetailsHeader';
+import DetailsImage from '../styles/DetailsImage';
+import DetailsWrapper from '../styles/DetailsWrapper';
+import logo from '../images/chef.png';
+import PatternHeading from '../styles/PatternHeading';
+import RadioWrapper from '../styles/RadioWrapper';
 
 function RecipeInProgress() {
   const { id } = useParams();
@@ -39,43 +45,57 @@ function RecipeInProgress() {
   };
 
   return (
-    <div>
-      <h1 data-testid="recipe-title">{recipe.strMeal || recipe.strDrink}</h1>
+    <>
+      <DetailsHeader>
+        <img src={ logo } alt="Imagem logo" />
+        <PatternHeading data-testid="recipe-title">
+          {recipe.strMeal || recipe.strDrink}
+        </PatternHeading>
+      </DetailsHeader>
+      <DetailsWrapper>
+        <DetailsImage
+          src={ recipe.strMealThumb || recipe.strDrinkThumb }
+          alt={ recipe.strMealThumb || recipe.strDrinkThumb }
+          data-testid="recipe-photo"
+        />
 
-      <img
-        src={ recipe.strMealThumb || recipe.strDrinkThumb }
-        alt={ recipe.strMealThumb || recipe.strDrinkThumb }
-        data-testid="recipe-photo"
+        <BtnsFavAndShare id={ id } recipe={ recipe } type={ pageInfo.title } />
+
+        <h2>Category</h2>
+        <p data-testid="recipe-category">
+          {pageInfo.title === 'Meals'
+            ? recipe.strCategory
+            : recipe.strAlcoholic}
+        </p>
+
+        <h2>Ingredientes</h2>
+        <RadioWrapper>
+          {ingredients.map((ingredient, index) => (
+            <label key={ index }>
+              <input
+                type="checkbox"
+                checked={ ingredient.checked }
+                data-testid={ `${index}-ingredient-step` }
+                onChange={ () => handleChange(index) }
+              />
+              <span className={ ingredient.checked ? 'marked' : undefined }>
+                {`${ingredient.ingredient} - ${ingredient.measure}`}
+              </span>
+            </label>
+          ))}
+        </RadioWrapper>
+
+        <h2>Intructions</h2>
+        <p data-testid="instructions">{recipe.strInstructions}</p>
+      </DetailsWrapper>
+      <BtnFinish
+        isFinished={ isFinished }
+        history={ useHistory() }
+        id={ id }
+        recipe={ recipe }
+        type={ pageInfo.title }
       />
-
-      <BtnsFavAndShare id={ id } recipe={ recipe } type={ pageInfo.title } />
-
-      <h2>Category</h2>
-      <p data-testid="recipe-category">
-        {pageInfo.title === 'Meals' ? recipe.strCategory : recipe.strAlcoholic}
-      </p>
-
-      <h2>Ingredientes</h2>
-      <div>
-        {ingredients.map((ingredient, index) => (
-          <label key={ index }>
-            <input
-              type="checkbox"
-              checked={ ingredient.checked }
-              data-testid={ `${index}-ingredient-step` }
-              onChange={ () => handleChange(index) }
-            />
-            <span className={ ingredient.checked ? 'CheckBoxColor' : undefined }>
-              {`${ingredient.ingredient} - ${ingredient.measure}`}
-            </span>
-          </label>
-        ))}
-      </div>
-
-      <h2>Intructions</h2>
-      <p data-testid="instructions">{recipe.strInstructions}</p>
-      <BtnFinish isFinished={ isFinished } />
-    </div>
+    </>
   );
 }
 

@@ -2,6 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import RecipesContext from '../context/RecipesContext';
 import { fetchData } from '../services/fetchs';
+import CarouselCard from '../styles/CarouselCard';
+import CarouselImage from '../styles/CarouselImage';
+import CarouselContainer from './CarouselContainer';
+import CarouselWrapper from './CarouselWrapper';
 
 const MAX_RECIPES = 6;
 
@@ -15,28 +19,24 @@ function Carousel({ type }) {
 
   const renderMeals = recipes
     .map((recipe, index) => (
-      <div
-        key={ index }
-        className="carouselCard"
-        data-testid={ `${index}-recommendation-card` }
-      >
+      <CarouselCard key={ index } data-testid={ `${index}-recommendation-card` }>
         <p data-testid={ `${index}-recommendation-title` }>
           {recipe.strDrink || recipe.strMeal}
         </p>
-        <img
+        <CarouselImage
           src={ recipe.strDrinkThumb || recipe.strMealThumb }
           alt={ recipe.strDrink || recipe.strMeal }
           className="carouselImage"
         />
-      </div>
+      </CarouselCard>
     ))
     .slice(0, MAX_RECIPES);
 
   return (
-    <div>
-      <h2>Recommedations</h2>
-      <div className="carouselContainer">{renderMeals}</div>
-    </div>
+    <CarouselWrapper>
+      <h2>Advices</h2>
+      <CarouselContainer>{renderMeals}</CarouselContainer>
+    </CarouselWrapper>
   );
 }
 

@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import copy from 'clipboard-copy';
+import share from '../images/shareIcon.svg';
 import whiteHeart from '../images/whiteHeartIcon.svg';
 import blackHeart from '../images/blackHeartIcon.svg';
 import {
@@ -56,13 +57,13 @@ function BtnsFavAndShare({ id, recipe, type }) {
 
   return (
     <div>
-      <button data-testid="share-btn" onClick={ copyFunction }>
-        Share
+      <button onClick={ copyFunction }>
+        <img src={ share } alt="share button" data-testid="share-btn" />
       </button>
       <button onClick={ toggleFavorite }>
         <img
           src={ isFavorite ? blackHeart : whiteHeart }
-          alt="coração"
+          alt="favorite button"
           data-testid="favorite-btn"
         />
       </button>
