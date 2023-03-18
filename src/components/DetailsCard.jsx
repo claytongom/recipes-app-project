@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import DetailsHeader from '../styles/DetailsHeader';
+import PatternHeading from '../styles/PatternHeading';
 import BtnsFavAndShare from './BtnsFavAndShare';
+import logo from '../images/chef.png';
+import DetailsImage from '../styles/DetailsImage';
+import DetailsWrapper from '../styles/DetailsWrapper';
 
 function DetailsCard({ id, recipe, ingredients, type }) {
   const [video, setVideo] = useState('');
@@ -24,43 +29,49 @@ function DetailsCard({ id, recipe, ingredients, type }) {
   });
 
   return (
-    <div>
-      <h1 data-testid="recipe-title">{recipe.strMeal || recipe.strDrink}</h1>
+    <>
+      <DetailsHeader>
+        <img src={ logo } alt="Imagem logo" />
+        <PatternHeading data-testid="recipe-title">
+          {recipe.strMeal || recipe.strDrink}
+        </PatternHeading>
+      </DetailsHeader>
+      <DetailsWrapper>
+        <DetailsImage
+          src={ recipe.strMealThumb || recipe.strDrinkThumb }
+          alt={ recipe.strMealThumb || recipe.strDrinkThumb }
+          data-testid="recipe-photo"
+        />
 
-      <img
-        src={ recipe.strMealThumb || recipe.strDrinkThumb }
-        alt={ recipe.strMealThumb || recipe.strDrinkThumb }
-        data-testid="recipe-photo"
-      />
+        <BtnsFavAndShare id={ id } recipe={ recipe } type={ type } />
 
-      <BtnsFavAndShare id={ id } recipe={ recipe } type={ type } />
+        <h2>Category</h2>
+        <p data-testid="recipe-category">
+          {type === 'Meals' ? recipe.strCategory : recipe.strAlcoholic}
+        </p>
 
-      <h2>Category</h2>
-      <p data-testid="recipe-category">
-        {type === 'Meals' ? recipe.strCategory : recipe.strAlcoholic}
-      </p>
+        <h2>Ingredients</h2>
+        <ul>{renderIngredients}</ul>
 
-      <h2>Ingredients</h2>
-      <ul>{renderIngredients}</ul>
+        <h2>Instructions</h2>
+        <p data-testid="instructions">{recipe.strInstructions}</p>
 
-      <h2>Intructions</h2>
-      <p data-testid="instructions">{recipe.strInstructions}</p>
-
-      {recipe.strYoutube && (
-        <>
-          <h2>Video</h2>
-          <iframe
-            data-testid="video"
-            width="560"
-            height="315"
-            src={ `https://www.youtube.com/embed/${video}` }
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media"
-            allowFullScreen
-          />
-        </>
-      )}
-    </div>
+        {recipe.strYoutube && (
+          <>
+            <h2>Video</h2>
+            <iframe
+              data-testid="video"
+              width="360"
+              height="180"
+              src={ `https://www.youtube.com/embed/${video}` }
+              title="YouTube video player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media"
+              allowFullScreen
+            />
+          </>
+        )}
+      </DetailsWrapper>
+    </>
   );
 }
 

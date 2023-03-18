@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import StyledCard from '../styles/StyledCard';
 
 function RecipeCard(props) {
   const { id, index, name, image, page } = props;
   return (
     <Link to={ `/${page}/${id}` }>
-      <div data-testid={ `${index}-recipe-card` }>
-        <p data-testid={ `${index}-card-name` }>{name}</p>
+      <StyledCard data-testid={ `${index}-recipe-card` }>
+        <h3 data-testid={ `${index}-card-name` }>{name}</h3>
         <img data-testid={ `${index}-card-img` } src={ image } alt={ name } />
-      </div>
+      </StyledCard>
     </Link>
   );
 }

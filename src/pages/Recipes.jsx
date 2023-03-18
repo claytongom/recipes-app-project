@@ -7,6 +7,9 @@ import RecipeCard from '../components/RecipeCard';
 import RecipesContext from '../context/RecipesContext';
 import getTitleAndButton from '../helpers/getTitleAndButton';
 import { fetchCaterorys, fetchData } from '../services/fetchs';
+import CardWrapper from '../styles/CardWrapper';
+import FilterButton from '../styles/FilterButton';
+import FiltersWrapper from '../styles/FiltersWrapper';
 
 function Recipes() {
   const MAX_RECIPES = 12;
@@ -57,39 +60,46 @@ function Recipes() {
           <Header title={ pageInfo.title } searchButton={ pageInfo.haveButton } />
         )}
 
-        {/* Renderização do botão All */}
-        <button data-testid="All-category-filter" onClick={ removeFilter }>
-          All
-        </button>
+        <FiltersWrapper>
+          {/* Renderização do botão All */}
+          <FilterButton
+            data-testid="All-category-filter"
+            onClick={ removeFilter }
+          >
+            All
+          </FilterButton>
 
-        {/* Renderização dos botões de categoria */}
-        {categorys
-          .map((item, index) => {
-            const { strCategory } = item;
-            return (
-              <BtnCategory
-                removeFilter={ removeFilter }
-                key={ index }
-                categoryName={ strCategory }
-                type={ pageInfo.title }
+          {/* Renderização dos botões de categoria */}
+          {categorys
+            .map((item, index) => {
+              const { strCategory } = item;
+              return (
+                <BtnCategory
+                  removeFilter={ removeFilter }
+                  key={ index }
+                  categoryName={ strCategory }
+                  type={ pageInfo.title }
+                />
+              );
+            })
+            .slice(0, MAX_CATEGORYS)}
+        </FiltersWrapper>
+
+        <CardWrapper>
+          {/* Renderização das receitas */}
+          {recipes
+            .map((item, index) => (
+              <RecipeCard
+                key={ item.idMeal || item.idDrink }
+                id={ item.idMeal || item.idDrink }
+                index={ index }
+                name={ item.strDrink || item.strMeal }
+                image={ item.strMealThumb || item.strDrinkThumb }
+                page={ pageInfo.title.toLowerCase() }
               />
-            );
-          })
-          .slice(0, MAX_CATEGORYS)}
-
-        {/* Renderização das receitas */}
-        {recipes
-          .map((item, index) => (
-            <RecipeCard
-              key={ item.idMeal || item.idDrink }
-              id={ item.idMeal || item.idDrink }
-              index={ index }
-              name={ item.strDrink || item.strMeal }
-              image={ item.strMealThumb || item.strDrinkThumb }
-              page={ pageInfo.title.toLowerCase() }
-            />
-          ))
-          .slice(0, MAX_RECIPES)}
+            ))
+            .slice(0, MAX_RECIPES)}
+        </CardWrapper>
       </main>
       <Footer />
     </>

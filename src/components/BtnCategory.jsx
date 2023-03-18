@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import RecipesContext from '../context/RecipesContext';
 import { fetchByFilter } from '../services/fetchs';
+import FilterButton from '../styles/FilterButton';
 
 function BtnCategory({ categoryName, type, removeFilter }) {
   const { setRecipes, filter, setFilter, setMakeSearch } = useContext(RecipesContext);
@@ -22,12 +23,12 @@ function BtnCategory({ categoryName, type, removeFilter }) {
   };
 
   return (
-    <button
+    <FilterButton
       data-testid={ `${categoryName}-category-filter` }
       onClick={ () => toggleFunction(categoryName) }
     >
       {categoryName}
-    </button>
+    </FilterButton>
   );
 }
 

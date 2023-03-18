@@ -5,6 +5,8 @@ import blackHeartIcon from '../images/blackHeartIcon.svg';
 import Gift from '../components/Gift';
 import Header from '../components/Header';
 import getTitleAndButton from '../helpers/getTitleAndButton';
+import FiltersWrapper from '../styles/FiltersWrapper';
+import FilterButton from '../styles/FilterButton';
 
 function FavoriteRecipes() {
   const { pathname } = useLocation();
@@ -25,12 +27,12 @@ function FavoriteRecipes() {
       setFilteredFavorites(favorites);
     } else if (filterMeal) {
       const mealFavorites = favorites.filter(
-        (recipe) => recipe.type === 'meal',
+        (recipe) => recipe.type === 'meal'
       );
       setFilteredFavorites(mealFavorites);
     } else if (filterDrink) {
       const drinkFavorites = favorites.filter(
-        (recipe) => recipe.type === 'drink',
+        (recipe) => recipe.type === 'drink'
       );
       setFilteredFavorites(drinkFavorites);
     }
@@ -53,7 +55,8 @@ function FavoriteRecipes() {
   // manipular e compartilhar COMIDAS e DRINKS usando um alerta
   const handleShare = (id, type) => {
     const BASE_URL = 'http://localhost:3000';
-    const url = type === 'meal' ? `${BASE_URL}/meals/${id}` : `${BASE_URL}/drinks/${id}`;
+    const url =
+      type === 'meal' ? `${BASE_URL}/meals/${id}` : `${BASE_URL}/drinks/${id}`;
 
     showAlert();
     navigator.clipboard.writeText(url);
@@ -73,43 +76,42 @@ function FavoriteRecipes() {
   };
   // serve para renderizar as receitas favoritas
   const renderFavoriteRecipes = filteredFavorites.map((recipe, index) => {
-    const { id, type, name, image, category, alcoholicOrNot, nationality } = recipe;
+    const { id, type, name, image, category, alcoholicOrNot, nationality } =
+      recipe;
     const url = type === 'meal' ? `/meals/${id}` : `/drinks/${id}`;
 
     return (
-      <div key={ id }>
-        <a href={ url }>
+      <div key={id}>
+        <a href={url}>
           <img
             width="200px"
-            src={ image }
-            alt={ name }
-            data-testid={ `${index}-horizontal-image` }
+            src={image}
+            alt={name}
+            data-testid={`${index}-horizontal-image`}
           />
         </a>
-        <div data-testid={ `${index}-horizontal-top-text` }>
+        <div data-testid={`${index}-horizontal-top-text`}>
           {`${nationality} - ${category}`}
         </div>
-        <Link to={ url }>
-          <div data-testid={ `${index}-horizontal-name` }>{name}</div>
+        <Link to={url}>
+          <div data-testid={`${index}-horizontal-name`}>{name}</div>
         </Link>
         <button
           type="button"
-          onClick={ () => handleShare(id, type) }
-          data-testid={ `${index}-horizontal-share-btn` }
-          src={ shareIcon }
-        >
-          <img src={ shareIcon } alt="Compartilhar receita" />
+          onClick={() => handleShare(id, type)}
+          data-testid={`${index}-horizontal-share-btn`}
+          src={shareIcon}>
+          <img src={shareIcon} alt="Compartilhar receita" />
         </button>
         <button
-          data-testid={ `${index}-horizontal-favorite-btn` }
-          src={ blackHeartIcon }
+          data-testid={`${index}-horizontal-favorite-btn`}
+          src={blackHeartIcon}
           type="button"
-          onClick={ () => handleFavorite(id) }
-        >
-          <img src={ blackHeartIcon } alt="Desfavoritar receita" />
+          onClick={() => handleFavorite(id)}>
+          <img src={blackHeartIcon} alt="Desfavoritar receita" />
         </button>
         {alcoholicOrNot && (
-          <div data-testid={ `${index}-horizontal-top-text` }>
+          <div data-testid={`${index}-horizontal-top-text`}>
             {alcoholicOrNot}
           </div>
         )}
@@ -119,29 +121,28 @@ function FavoriteRecipes() {
   // elementos da tela de receitas favoritas passando os (data-testids)
   return (
     <>
-      <Header title={ pageInfo.title } searchButton={ pageInfo.haveButton } />
+      <Header title={pageInfo.title} searchButton={pageInfo.haveButton} />
       <div>
-        <button
-          onClick={ () => handleFilter('meal') }
-          data-testid="filter-by-meal-btn"
-          type="button"
-        >
-          Meals
-        </button>
-        <button
-          onClick={ () => handleFilter('drink') }
-          data-testid="filter-by-drink-btn"
-          type="button"
-        >
-          Drinks
-        </button>
-        <button
-          onClick={ () => handleFilter('all') }
-          data-testid="filter-by-all-btn"
-          type="button"
-        >
-          All
-        </button>
+        <FiltersWrapper>
+          <FilterButton
+            onClick={() => handleFilter('all')}
+            data-testid="filter-by-all-btn"
+            type="button">
+            All
+          </FilterButton>
+          <FilterButton
+            onClick={() => handleFilter('meal')}
+            data-testid="filter-by-meal-btn"
+            type="button">
+            Meals
+          </FilterButton>
+          <FilterButton
+            onClick={() => handleFilter('drink')}
+            data-testid="filter-by-drink-btn"
+            type="button">
+            Drinks
+          </FilterButton>
+        </FiltersWrapper>
       </div>
       {renderFavoriteRecipes}
       {showGift && <Gift message="Link copied!" />}
